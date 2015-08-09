@@ -1,10 +1,11 @@
 from state import StateManager
-from states import splash
+from states import splash, game
 
 def main():
-    game = StateManager()
+    gameCtrl = StateManager()
     state_dict = {
-        "splash": splash.SplashState()
+        "splash": splash.SplashState(),
+    	"Game": game.GameState()
     }
-    game.setup_states(state_dict, "splash")
-    game.main_loop()
+    gameCtrl.setup_states(state_dict, "splash")
+    gameCtrl.main_loop()

@@ -12,7 +12,8 @@ class StateManager(object):
         self.clock = pg.time.Clock()
         self.fps = 60.0
         self.show_fps = True
-        self.done = False        
+        self.done = False
+        self.keys = pg.key.get_pressed()        
         self.state_dict = {}
         self.state = None
         self.state_name = None
@@ -46,7 +47,7 @@ class StateManager(object):
 
     def update(self, dt):
         self.current_time = pg.time.get_ticks()
-        self.state.update(dt, self.current_time)
+        self.state.update(dt, self.current_time, self.keys)
         if self.show_fps:
             fps = self.clock.get_fps()
             with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
@@ -91,7 +92,7 @@ class _State(object):
     def handle_events(self, event):
         pass
 
-    def update(self, dt , current_time):
+    def update(self, dt , current_time, keys):
         pass
 
     def render(self, surface):
