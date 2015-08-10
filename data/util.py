@@ -2,7 +2,7 @@ import pygame as pg
 
 # game constants
 SCREEN_WIDTH, SCREEN_HEIGHT = SCREEN_SIZE = (800,600)
-CAPTION = 'no name yet'
+CAPTION = 'Hackerman'
 CONTROLS = {
     pg.K_UP:  "UP",
     pg.K_DOWN: "DOWN",

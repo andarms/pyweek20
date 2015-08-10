@@ -119,7 +119,7 @@ class Bug(Actor):
         self.wait_time = 0.0
         self.change_direction()
 
-    def update(self, dt, current_time, walls):
+    def update(self, dt, current_time, walls, *args):
         """
         Choose a new direction if wait_time has expired or the sprite
         collide with thw walls.
@@ -131,13 +131,14 @@ class Bug(Actor):
             self.change_direction(current_time)
 
 
-    def change_direction(self, now=0):
+    def change_direction(self, now=0, direction=None):
         """
         Empty the stack and choose a new direction.  The sprite may also
         choose not to go idle (choosing direction=None)
         """
         self.direction_stack = []
-        direction = random.choice(util.DIRECTIONS+(None,))
+        if not direction:
+            direction = random.choice(util.DIRECTIONS+(None,))
         if direction:
             super(Bug, self).add_direction(direction)
         self.wait_delay = random.randint(*self.wait_range)
@@ -146,6 +147,34 @@ class Bug(Actor):
     def distance(self, p1, p2):
         return math.sqrt((p2[0]-p1[0])**2 + (p2[1]-p1[0])**2)
 
+
+class ChasingBug(Bug):
+    def __init__(self, pos, *groups):
+        super(ChasingBug, self).__init__(pos, *groups)
+        self.image.fill((182,185,52))
+        self.wait_delay = 500 #mseg
+
+    def update(self, dt, current_time, walls, player_rect):
+        """
+        Simple chasing, random choose to follow the player
+        vertical or horizontal.  
+        """
+        if current_time-self.wait_time > self.wait_delay:
+            x_diff = self.rect.x - player_rect.x
+            y_diff = self.rect.y - player_rect.y
+            first = random.choice(('vertical', 'horizontal'))
+            if first == 'horizontal':
+                if x_diff < 0: direction = "RIGHT"
+                else: direction = "LEFT"
+            else:
+                if y_diff < 0: direction = "DOWN"
+                else: direction = "UP"
+            self.change_direction(current_time, direction)
+        if self.rect.x == player_rect.x or self.rect.y == player_rect.y:
+            self.attack(dt)
+        super(Bug, self).update(dt, walls)
+        if self.collide:
+            self.change_direction(current_time)
         
 
 class Bullet(pg.sprite.DirtySprite):
