@@ -15,6 +15,7 @@ DIR_VECTORS = {
     "LEFT":  (-1, 0),
     "RIGHT":  (1, 0)
 }
+DIRECTIONS = ("UP", "LEFT", "DOWN", "RIGHT")
 
 # Initialization
 pg.init()
