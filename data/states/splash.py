@@ -1,6 +1,7 @@
 import pygame as pg
 
-from .. import util, state
+import state
+from .. import util
 
 class SplashState(state._State):
     def __init__(self):

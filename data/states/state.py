@@ -1,6 +1,6 @@
 import pygame as pg
 
-import util
+from .. import util
 
 class StateManager(object):
     """ Control class for the games states"""

@@ -1,7 +1,8 @@
 import random
 import pygame as pg
 
-from .. import util, state, actors
+from ... import util, actors
+from .. import state
 
 class GameState(state._State):
     def __init__(self):

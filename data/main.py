@@ -1,8 +1,8 @@
-from state import StateManager
-from states import splash, game
+from states import state, splash
+from states.game import game
 
 def main():
-    gameCtrl = StateManager()
+    gameCtrl = state.StateManager()
     state_dict = {
         "splash": splash.SplashState(),
     	"Game": game.GameState()
