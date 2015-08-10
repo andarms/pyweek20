@@ -12,9 +12,11 @@ class GameState(state._State):
     def handle_events(self, event):
     	self.player.handle_events(event)
 
-    def update(self, dt, current_time, keys):
-        self.all_sprites.update(dt)
+    def update(self, dt, current_time, keys):    	
+        self.all_sprites.update(dt, keys)
+        util.gfx_group.update(dt)
 
     def render(self, surface):
         surface.fill(self.bg_color)
         self.all_sprites.draw(surface)
+        util.gfx_group.draw(surface)
