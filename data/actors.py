@@ -4,7 +4,7 @@ import random
 import pygame as pg
 
 import util
-class Actor(pg.sprite.Sprite):
+class Actor(pg.sprite.DirtySprite):
     """docstring for Actor"""
     def __init__(self, pos, *groups):
         super(Actor, self).__init__(*groups)
