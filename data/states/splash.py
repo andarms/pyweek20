@@ -16,6 +16,6 @@ class SplashState(state._State):
             self.done = True # must be self.done
 
     def render(self, surface):
-        surface.fill(self.bg_color)
+        return surface.fill(self.bg_color)
 
 

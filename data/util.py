@@ -22,6 +22,6 @@ pg.init()
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
 SCREEN_RECT = SCREEN.get_rect()
 
-gfx_group = pg.sprite.Group()
+gfx_group = pg.sprite.LayeredDirty()
 
 # load resources

@@ -7,7 +7,7 @@ import level
 class GameState(state._State):
     def __init__(self):
         super(GameState, self).__init__()
-        self.bg_color = (56, 68,145)
+        self.bg_color = (0, 0, 0)
         self.level = level.Level()      
 
     def handle_events(self, event):
@@ -18,4 +18,4 @@ class GameState(state._State):
 
     def render(self, surface):
         surface.fill(self.bg_color)
-        self.level.render(surface)
+        return self.level.render(surface)

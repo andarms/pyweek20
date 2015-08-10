@@ -18,6 +18,7 @@ class Actor(pg.sprite.DirtySprite):
         self.cooldowntime = 0.1 #seg
         self.cooldown = 0.0
         self.hp = 100
+        self.dirty = 1
 
     def add_direction(self, direction):
         """
@@ -43,12 +44,14 @@ class Actor(pg.sprite.DirtySprite):
         if self.hp <= 0:
             self.kill()
         if self.direction_stack:
+            self.dirty = 1
             direction_vector = util.DIR_VECTORS[self.direction]
             self.rect.x += direction_vector[0] * self.speed * dt
             self.rect.y += direction_vector[1] * self.speed * dt
         self.rect.clamp_ip(util.SCREEN_RECT)
 
     def attack(self, dt, *groups):
+        self.dirty = 1
         if self.cooldown > 0:
             self.cooldown -= dt
         else:
@@ -124,7 +127,7 @@ class Bug(Actor):
 
         
 
-class Bullet(pg.sprite.Sprite):
+class Bullet(pg.sprite.DirtySprite):
     """docstring for Bullet"""
     def __init__(self, pos, direction, *groups):
         super(Bullet, self).__init__(*groups)
@@ -141,7 +144,8 @@ class Bullet(pg.sprite.Sprite):
         self.time = 0.0
         self.speed = 450
         self.dx = self.direction[0] * self.speed
-        self.dy = self.direction[1] * self.speed        
+        self.dy = self.direction[1] * self.speed 
+        self.dirty = 2  
 
     def update(self, dt):
         self.time += dt
