@@ -5,13 +5,16 @@
 	- item
 	- enemies
 ### level:
-	-create maps and transitions
+	- create maps ~~(without tiled)~~
+	- ~~collisions~~
+	- transitions
+	- viewport
 ### enemies:
 	- ~~Bugs~~
 	- Chasing enemies
 	- Kamikaze enemies
 	- Shooting
-	- collition
+	- collision
 ### Player: 
 	- ~~RPG 4-ways movement~~
 	- ~~Shooting~~

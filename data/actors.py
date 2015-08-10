@@ -10,7 +10,7 @@ class Actor(pg.sprite.DirtySprite):
         super(Actor, self).__init__(*groups)
         self.pos = pos
         self.image = pg.Surface((32,32)) # replace for image load
-        self.image.fill((56,185,174))
+        self.image.fill((226,51,74))
         self.rect = self.image.get_rect(topleft=pos)
         self.speed = 250 #px/seg
         self.direction = "UP"
@@ -18,6 +18,7 @@ class Actor(pg.sprite.DirtySprite):
         self.cooldowntime = 0.1 #seg
         self.cooldown = 0.0
         self.hp = 100
+        self.collide = False
         self.dirty = 1
 
     def add_direction(self, direction):
@@ -40,7 +41,7 @@ class Actor(pg.sprite.DirtySprite):
         if self.direction_stack:
             self.direction = self.direction_stack[-1]
 
-    def update(self, dt):
+    def update(self, dt, walls):
         if self.hp <= 0:
             self.kill()
         if self.direction_stack:
@@ -48,7 +49,23 @@ class Actor(pg.sprite.DirtySprite):
             direction_vector = util.DIR_VECTORS[self.direction]
             self.rect.x += direction_vector[0] * self.speed * dt
             self.rect.y += direction_vector[1] * self.speed * dt
-        self.rect.clamp_ip(util.SCREEN_RECT)
+        self.check_collitions(walls)
+
+    def check_collitions(self, walls):
+        for wall in walls:
+            if self.rect.colliderect(wall.rect):
+                if self.direction == "LEFT":
+                    self.rect.left = wall.rect.right
+                elif self.direction == "RIGHT":
+                    self.rect.right = wall.rect.left
+                elif self.direction == "UP":
+                    self.rect.top = wall.rect.bottom                    
+                elif self.direction == "DOWN":
+                    self.rect.bottom = wall.rect.top
+                self.collide = True
+                self.dirty = 1
+            else:
+                self.collide = False
 
     def attack(self, dt, *groups):
         self.dirty = 1
@@ -57,6 +74,10 @@ class Actor(pg.sprite.DirtySprite):
         else:
             Bullet(self.rect.center, self.direction, *groups)
             self.cooldown = self.cooldowntime
+
+    def take_damage(self, damage):
+        self.hp -= damage
+        self.dirty = 1
 
 class Player(Actor):
     def __init__(self, pos, *groups):
@@ -81,13 +102,13 @@ class Player(Actor):
             direction = util.CONTROLS[key]
             super(Player, self).pop_direction(direction)
 
-    def update(self, dt, keys, enemies):
-        super(Player, self).update(dt)
+    def update(self, dt, keys, enemies, walls):
+        super(Player, self).update(dt, walls)
         if keys[pg.K_d]:
             self.attack(dt, self.bullets)
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            bug.hp -= 35 # just one hit for bullet allow
+            bug.take_damage(35)
 
 class Bug(Actor):
     """docstring for Bug"""
@@ -98,17 +119,17 @@ class Bug(Actor):
         self.wait_time = 0.0
         self.change_direction()
 
-    def update(self, dt, current_time):
+    def update(self, dt, current_time, walls):
         """
         Choose a new direction if wait_time has expired or the sprite
-        attempts to leave the screen.
+        collide with thw walls.
         """        
         if current_time-self.wait_time > self.wait_delay:
             self.change_direction(current_time)
-        super(Bug, self).update(dt)
-        if not util.SCREEN_RECT.contains(self.rect):
+        super(Bug, self).update(dt, walls)
+        if self.collide:
             self.change_direction(current_time)
-            self.rect.clamp_ip(util.SCREEN_RECT)
+
 
     def change_direction(self, now=0):
         """
