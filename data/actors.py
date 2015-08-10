@@ -114,7 +114,7 @@ class Bug(Actor):
     """docstring for Bug"""
     def __init__(self, pos, *groups):
         super(Bug, self).__init__(pos, *groups)
-        self.wait_range = (500, 3000)
+        self.wait_range = (500, 2000)
         self.wait_delay = random.randint(*self.wait_range)
         self.wait_time = 0.0
         self.change_direction()
