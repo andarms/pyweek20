@@ -1,7 +1,12 @@
 TODO:
 - Graphics
 - level
-- enemies
+- enemies:
+		*~~bugs~~
+		*chasing enemies
+		*kamikaze enemies
+		*kamikaze enemies
+		*shotting
+		*collition
 - ~~Player: rgp 4-ways movement~~
-- Player smooth move, acceleration
 - create maps and transitions
