@@ -27,6 +27,6 @@
  
 ### Menu
 ### Info:
-- Fonts
+- ~~Fonts~~
 - player info
 - tooltips
