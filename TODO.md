@@ -28,8 +28,9 @@
 ### Menu
 ### HUD:
 - ~~Fonts~~
-- player info
-- tooltips
+- ~~player info~~
+- ~~tooltips~~
 
 ### Other
 - Splah type game name
+- fix death bug
