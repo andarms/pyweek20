@@ -154,14 +154,15 @@ class ChasingBug(Bug):
         self.image.fill((182,185,52))
         self.wait_delay = 500 #mseg
 
-    def update(self, dt, current_time, walls, player_rect):
+    def update(self, dt, current_time, walls, player):
         """
         Simple chasing, random choose to follow the player
-        vertical or horizontal.  
+        vertical or horizontal.
+        Player rect player.rect pygame.Rect
         """
         if current_time-self.wait_time > self.wait_delay:
-            x_diff = self.rect.x - player_rect.x
-            y_diff = self.rect.y - player_rect.y
+            x_diff = self.rect.x - player.rect.x
+            y_diff = self.rect.y - player.rect.y
             first = random.choice(('vertical', 'horizontal'))
             if first == 'horizontal':
                 if x_diff < 0: direction = "RIGHT"
@@ -170,12 +171,78 @@ class ChasingBug(Bug):
                 if y_diff < 0: direction = "DOWN"
                 else: direction = "UP"
             self.change_direction(current_time, direction)
-        if self.rect.x == player_rect.x or self.rect.y == player_rect.y:
+        if self.rect.x == player.rect.x or self.rect.y == player.rect.y:
             self.attack(dt)
         super(Bug, self).update(dt, walls)
         if self.collide:
             self.change_direction(current_time)
         
+class Trojan(Actor):
+    def __init__(self, pos, *groups):
+        super(Trojan, self).__init__(pos, *groups)
+        self.image.fill((200,200,200))
+        self.wait_range = (500, 800)
+        self.wait_delay = random.randint(*self.wait_range)
+        self.wait_time = 0.0
+        self.goal_x = 0
+        self.goal_y = 0        
+        self.next_direction = None
+        self.hp = 300
+        self.bullets = pg.sprite.Group()
+
+    def update(self, dt, current_time, walls, player):
+        """
+        Better Chase. Still not been the better AI but work for me.
+        """
+        if current_time-self.wait_time > self.wait_delay:
+            self.direction_stack = []
+            self.goal_x = player.rect.x
+            self.goal_y = player.rect.y
+            x_diff = self.rect.x - player.rect.x
+            y_diff = self.rect.y - player.rect.y
+            if not x_diff in xrange(-32,32) or not y_diff in xrange(-32,32):
+                if x_diff < 0: dir_x = "RIGHT"
+                else: dir_x = "LEFT"
+                if y_diff < 0: dir_y = "DOWN"
+                else: dir_y = "UP"
+                first = random.choice(('vertical', 'horizontal'))
+                if first == 'horizontal':
+                    self.add_direction(dir_x)
+                    self.next_direction = dir_y
+                else:
+                    self.add_direction(dir_y)
+                    self.next_direction = dir_x
+            self.wait_time = current_time
+        
+        # Attack if player
+        x_sight = self.rect.x in xrange(player.rect.x-32, player.rect.x+32)
+        y_sight = self.rect.y in xrange(player.rect.y-32, player.rect.y+32)
+        if y_sight and self.direction in ("LEFT", "RIGHT"): 
+            self.attack(dt, self.bullets)
+        if x_sight and self.direction in ("UP", "DOWN"):
+            self.attack(dt, self.bullets)
+        if pg.sprite.spritecollide(player, self.bullets,True):
+            player.take_damage(5)
+
+        # movement
+        if self.reach_goal():
+            self.pop_direction(self.direction)
+            if self.next_direction:
+                self.add_direction(self.next_direction)
+                self.next_direction = None
+        super(Trojan, self).update(dt, walls)          
+        if self.collide:            
+            self.pop_direction(self.direction)
+            new_direction = random.choice(util.DIRECTIONS-(self.direction))            
+            self.add_direction()
+            self.wait_time = current_time
+
+    def reach_goal(self):
+        if self.rect.x == self.goal_x or self.rect.y == self.goal_y:            
+            return True
+        return False
+
+
 
 class Bullet(pg.sprite.DirtySprite):
     """docstring for Bullet"""

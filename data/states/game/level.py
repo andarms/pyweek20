@@ -48,12 +48,12 @@ class Level(object):
         while len(enemies) < self.max_enemies:
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
-            bug = actors.ChasingBug((x, y))
+            bug = actors.Bug((x, y))
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
-        # x = random.randint(0, self.rect.w)
-        # y = random.randint(0, self.rect.h)
-        # actors.ChasingBug((x, y), enemies, self.all_sprites)
+        x = random.randint(0, self.rect.w)
+        y = random.randint(0, self.rect.h)
+        actors.Trojan((x, y), enemies, self.all_sprites)
         return enemies
 
     def handle_events(self, event):
@@ -61,7 +61,7 @@ class Level(object):
 
     def update(self, dt, current_time, keys):       
         self.player_singleton.update(dt, keys, self.enemies, self.walls)
-        self.enemies.update(dt, current_time, self.walls, self.player.rect)
+        self.enemies.update(dt, current_time, self.walls, self.player)
         util.gfx_group.update(dt)
         self.update_viewport()
 
