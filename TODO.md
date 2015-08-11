@@ -26,7 +26,10 @@
 - Hack items
  
 ### Menu
-### Info:
+### HUD:
 - ~~Fonts~~
 - player info
 - tooltips
+
+### Other
+- Splah type game name

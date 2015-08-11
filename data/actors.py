@@ -185,7 +185,8 @@ class Trojan(Actor):
         self.goal_x = 0
         self.goal_y = 0        
         self.next_direction = None
-        self.hp = 300
+        self.hp = 250
+        self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
 
     def update(self, dt, current_time, walls, player):

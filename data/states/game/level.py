@@ -1,7 +1,7 @@
 import random
 import pygame as pg
 
-from ... import util, actors
+from ... import util, actors, hud
 
 def clear_callback(surface, rect):
     """
@@ -28,6 +28,7 @@ class Level(object):
         self.player = actors.Player([50,50], self.player_singleton, 
                                         self.all_sprites)
         self.viewport = util.SCREEN_RECT.copy()
+        self.hud = hud.HUD()
 
     def make_walls(self):
         x = 0
@@ -64,6 +65,7 @@ class Level(object):
         self.enemies.update(dt, current_time, self.walls, self.player)
         util.gfx_group.update(dt)
         self.update_viewport()
+        self.hud.update(self.player)
 
         for sprite in self.all_sprites:
             layer = self.all_sprites.get_layer_of_sprite(sprite)
@@ -84,8 +86,9 @@ class Level(object):
         self.all_sprites.clear(self.image, self.background)
         util.gfx_group.draw(self.image)
         self.all_sprites.draw(self.image)
-        dirty = surface.blit(self.image, (0,0), self.viewport)
-        return dirty
+        dirty1 = surface.blit(self.image, (0,0), self.viewport)
+        dirty2 = self.hud.render(surface)
+        return dirty1 , dirty2
 
 
 
