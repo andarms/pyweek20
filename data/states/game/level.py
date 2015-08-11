@@ -22,6 +22,7 @@ class Level(object):
         self.background.fill((0,0,0))
         self.max_enemies = 27
         self.all_sprites = pg.sprite.LayeredDirty()
+        self.actions = pg.sprite.Group()
         self.walls = self.make_walls()
         self.enemies = self.make_enemies()
         self.player_singleton = pg.sprite.GroupSingle()
@@ -38,6 +39,8 @@ class Level(object):
             for col in row:
                 if col == "#":
                     Wall((x,y), walls, self.all_sprites)
+                if col == "=":
+                    InfectedWall((x,y), walls, self.actions, self.all_sprites)
                 x += util.WALL_SIZE
             y += util.WALL_SIZE
             x = 0
@@ -63,6 +66,7 @@ class Level(object):
     def update(self, dt, current_time, keys):       
         self.player_singleton.update(dt, keys, self.enemies, self.walls)
         self.enemies.update(dt, current_time, self.walls, self.player)
+        self.actions.update(dt, current_time, self.player)
         util.gfx_group.update(dt)
         self.update_viewport()
         self.hud.update(self.player)
@@ -82,13 +86,15 @@ class Level(object):
         self.viewport.clamp_ip(self.rect)
 
     def render(self, surface):
+        dirty = []
         util.gfx_group.clear(self.image, self.background)
         self.all_sprites.clear(self.image, self.background)
         util.gfx_group.draw(self.image)
         self.all_sprites.draw(self.image)
-        dirty1 = surface.blit(self.image, (0,0), self.viewport)
-        dirty2 = self.hud.render(surface)
-        return dirty1 , dirty2
+        rect1 = surface.blit(self.image, (0,0), self.viewport)
+        rect2 = self.hud.render(surface)
+        dirty.extend((rect1, rect2))
+        return dirty
 
 
 
@@ -100,4 +106,25 @@ class Wall(pg.sprite.DirtySprite):
         self.image.fill((155,255,155))
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
-        self.dirty = 1 
+        self.dirty = 1
+
+class InfectedWall(pg.sprite.DirtySprite):
+    """docstring for Wall"""
+    def __init__(self, pos, *gorups):
+        super(InfectedWall, self).__init__(*gorups)
+        self.image = pg.Surface((util.WALL_SIZE, util.WALL_SIZE))
+        self.image.fill((55,100,25))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = pos
+        self.big_rect = self.rect.inflate(1,1)
+        self.dirty = 1
+        self.font = pg.font.Font(util.FONTS['west-england.regular'], 20)
+        self.help = "Prees E to Delete it"
+
+    def update(self, dt, current_time, player):
+        if self.big_rect.colliderect(player.rect):
+            util.msg = self.help
+        else:
+            if util.msg:
+                util.msg = None
+

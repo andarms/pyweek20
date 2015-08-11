@@ -103,6 +103,8 @@ class Player(Actor):
             super(Player, self).pop_direction(direction)
 
     def update(self, dt, keys, enemies, walls):
+        if self.hp <= 0:
+            util.msg = "Game Over"
         super(Player, self).update(dt, walls)
         if keys[pg.K_d]:
             self.attack(dt, self.bullets)
