@@ -171,8 +171,6 @@ class ChasingBug(Bug):
                 if y_diff < 0: direction = "DOWN"
                 else: direction = "UP"
             self.change_direction(current_time, direction)
-        if self.rect.x == player.rect.x or self.rect.y == player.rect.y:
-            self.attack(dt)
         super(Bug, self).update(dt, walls)
         if self.collide:
             self.change_direction(current_time)

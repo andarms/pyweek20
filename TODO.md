@@ -7,16 +7,16 @@
 - enemies
 
 ### Level:
--create maps ~~(without tiled)~~
+- Create maps ~~(without tiled)~~
 - ~~collisions~~
 - transitions
 - ~~viewport~~
 
 ### Enemies:
 - ~~Bugs~~
-- Chasing enemies
+- ~~Chasing enemies~~
 - Kamikaze enemies
-- Shooting
+- ~~Shooting~~
 - collision
  
 ### Player: 
@@ -26,3 +26,7 @@
 - Hack items
  
 ### Menu
+### Info:
+- Fonts
+- player info
+- tooltips
