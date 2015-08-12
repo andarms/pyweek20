@@ -12,12 +12,14 @@ class GameState(state._State):
         self.game_over = False
 
     def start(self, data, current_time):
+        print "iniciando game"
         super(GameState, self).start(data, current_time)
         self.game_over = False
         self.player = self.player = actors.Player([50,50])
         self.level = level.Level(self.player)
 
     def clear(self):
+        super(GameState, self).clear()
         self.data['player'] = self.player
         self.player = None
         self.level = None

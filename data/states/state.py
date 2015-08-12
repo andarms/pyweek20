@@ -13,7 +13,7 @@ class StateManager(object):
         self.fps = 60.0
         self.show_fps = True
         self.done = False
-        self.keys = pg.key.get_pressed()        
+        self.keys = pg.key.get_pressed()    
         self.state_dict = {}
         self.state = None
         self.state_name = None
@@ -64,6 +64,7 @@ class StateManager(object):
         self.state = self.state_dict[self.state_name]
         self.state.start(data, self.current_time)
         self.state.previous = previous
+        self.keys = pg.key.get_pressed()
 
     def render(self):
         self.screen.fill(self.bg_color)

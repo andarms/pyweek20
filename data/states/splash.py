@@ -9,11 +9,12 @@ class SplashState(state._State):
         self.bg_color = (0,0,0)
         self.text_color = (155,255,155)
         self.duration = 3 #seg
+        self.image = pg.Surface(util.SCREEN_SIZE)
         self.next = "Game"
         self.title = "HackerMan"
         self.titleSurface = self.make_title_surface()
 
-    def star(self, data, current_time):
+    def start(self, data, current_time):
         super(SplashState, self).start(data, current_time)
         self.duration = 3
 
@@ -28,8 +29,9 @@ class SplashState(state._State):
             self.done = True # must be self.done
 
     def render(self, surface):
-        surface.fill(self.bg_color)
-        return surface.blit(self.titleSurface, util.SCREEN_RECT.center)
+        self.image.fill(self.bg_color)
+        self.image.blit(self.titleSurface, util.SCREEN_RECT.center)
+        return surface.blit(self.image, (0,0))
 
 
 
