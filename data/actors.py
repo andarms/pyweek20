@@ -80,10 +80,10 @@ class Actor(pg.sprite.DirtySprite):
     def take_damage(self, damage):
         self.hp -= damage
         self.dirty = 1
-        if self.hp <= 0:
-            self.kill()
-            del self
-            return False
+
+    def kill(self):
+        super(Actor, self).kill()
+        del self
 
 class Player(Actor):
     def __init__(self, pos, *groups):
@@ -92,6 +92,7 @@ class Player(Actor):
         self.speed = 300
         self.bullets = pg.sprite.Group()
         self.cooldowntime = 0.4
+        self.hp = 5
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -116,7 +117,7 @@ class Player(Actor):
                 self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            bug.take_damage(35)
+            bug.take_damage(35)    
 
 class Bug(Actor):
     """docstring for Bug"""

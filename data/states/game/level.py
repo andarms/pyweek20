@@ -51,20 +51,14 @@ class Level(object):
         actors.Trojan((x, y), enemies, self.all_sprites)
         return enemies
 
-    def handle_events(self, event):
-        self.player_singleton.sprite.handle_events(event)
-
     def update(self, dt, current_time, keys):
-        if self.player_singleton.sprite:
-            player = self.player_singleton.sprite
-            self.player_singleton.update(dt, keys, self.enemies, self.walls)
-            self.enemies.update(dt, current_time, self.walls, player)
-            self.actions.update(dt, current_time, player, keys)
-            util.gfx_group.update(dt)
-            self.update_viewport()
-        else:
-            self.hud.set_message("Game over")
-
+        self.player_singleton.update(dt, keys, self.enemies, self.walls)
+        player = self.player_singleton.sprite
+        self.enemies.update(dt, current_time, self.walls, player)
+        self.actions.update(dt, current_time, player, keys)
+        util.gfx_group.update(dt)
+        self.update_viewport()
+        
         for sprite in self.all_sprites:
             layer = self.all_sprites.get_layer_of_sprite(sprite)
             if layer != sprite.rect.bottom:
@@ -78,7 +72,7 @@ class Level(object):
 
     def update_viewport(self):
         self.viewport.center = self.player_singleton.sprite.rect.center
-        self.viewport.clamp_ip(self.rect)
+        self.viewport.clamp_ip(self.rect)        
 
     def render(self, surface):
         util.gfx_group.clear(self.image, self.background)

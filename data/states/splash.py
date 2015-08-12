@@ -13,6 +13,10 @@ class SplashState(state._State):
         self.title = "HackerMan"
         self.titleSurface = self.make_title_surface()
 
+    def star(self, data, current_time):
+        super(SplashState, self).start(data, current_time)
+        self.duration = 3
+
     def make_title_surface(self):
         font = pg.font.Font(util.FONTS['west-england.regular'], 40)
         return font.render(self.title, False, self.text_color)
