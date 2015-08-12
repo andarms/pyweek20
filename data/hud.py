@@ -45,4 +45,13 @@ class Tooltip(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.centery = y - 32
+
+    def change_text(self, text):
+        if not self.text == text:
+            self.text = text
+            x, y = self.rect.center
+            self.image = FONT.render(text, False, (255, 255, 255))
+            self.rect = self.image.get_rect()
+            self.rect.centerx = x
+            self.rect.centery = y
         

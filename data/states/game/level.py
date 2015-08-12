@@ -66,7 +66,7 @@ class Level(object):
     def update(self, dt, current_time, keys):       
         self.player_singleton.update(dt, keys, self.enemies, self.walls)
         self.enemies.update(dt,current_time, self.walls, self.player)
-        self.actions.update(dt, current_time, self.player)
+        self.actions.update(dt, current_time, self.player, keys)
         util.gfx_group.update(dt)
         self.update_viewport()
         self.hud.update(self.player)
@@ -120,13 +120,34 @@ class InfectedWall(pg.sprite.DirtySprite):
         self.big_rect.center = self.rect.center
         self.help_text = "Prees E to Delete it"
         self.tooltip = hud.Tooltip(self.help_text, self.rect.center)
+        self.deleting = False
+        self.death = 0
         self.dirty = 1
+        self.time = 0.0
+        self.delay = 50
         
 
-    def update(self, dt, current_time, player):
+    def update(self, dt, current_time, player, keys):
+        if self.death == 100:
+            self.kill()
+            self.tooltip.kill()
+            del self
+            return False
+
         if self.big_rect.colliderect(player.rect):
             self.tooltip.add(util.gfx_group)
+            if keys[pg.K_e]:
+                self.deleting = True
         else:
             self.tooltip.remove(util.gfx_group)
+            self.deleting = False
+            self.death = 0      
+            self.tooltip.change_text(self.help_text)
+        if current_time-self.time > self.delay:
+            if self.deleting:
+                self.tooltip.change_text("Deleting %d" % (self.death))
+                self.death += 1
+            self.time = current_time
+
 
 
