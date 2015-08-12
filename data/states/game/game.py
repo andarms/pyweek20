@@ -18,12 +18,5 @@ class GameState(state._State):
         self.level.update(dt, current_time, keys)
 
     def render(self, surface):
-        dirty = []
         surface.fill(self.bg_color)
-        rect1 = self.level.render(surface)
-        dirty.extend((rect1))
-        if util.msg:
-            image = self.font.render(util.msg, False, (255,255,255))
-            i_rect = image.get_rect(center=util.SCREEN_RECT.center)
-            surface.blit(image, i_rect)
-        return dirty
+        return self.level.render(surface) 

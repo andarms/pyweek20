@@ -28,8 +28,8 @@ WORLD = [
     "#      #                                           #",
     "#      #                                           #",
     "#      #                            #######        #",
-    "#      #                                           #",
-    "#      #                                   ####### #",
+    "#      =                                           #",
+    "#      #                                   ###=### #",
     "#                                                  #",
     "#                                                  #",
     "#            #########=#######                     #",
@@ -42,10 +42,13 @@ WORLD = [
     "####################################################"
 ]
 WALL_SIZE = 32
-CMDS = ('$a%6dgjgk', '55r4/&38r4fefs5', '(gsdkj7*7', '68eq3dea2', '34/(1343', '#12-/|"4')
+CMDS = ('hackerman$ a%6dgj45s4dgugk', 
+        'hackerman$ 55r4/&38r4fefs5', 
+        'hackerman$ (gsdkj7*7ehrh5y', 
+        'hackerman$ 68eq3dedrgrgda2', 
+        'hackerman$ 34/(13454qwe#f3', 
+        'hackerman$ #12-/|sdsdfsd"4')
 
-# Use to show a message in the screen from any object
-msg = None
 
 # Helper functions
 def load_all_gfx(directory,colorkey=(0,0,0),accept=(".png",".jpg",".bmp")):
@@ -95,7 +98,8 @@ pg.init()
 SCREEN = pg.display.set_mode(SCREEN_SIZE)
 SCREEN_RECT = SCREEN.get_rect()
 
-gfx_group = pg.sprite.LayeredDirty()
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+gfx_group = pg.sprite.Group()
 
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))

@@ -65,7 +65,7 @@ class Level(object):
 
     def update(self, dt, current_time, keys):       
         self.player_singleton.update(dt, keys, self.enemies, self.walls)
-        self.enemies.update(dt, current_time, self.walls, self.player)
+        self.enemies.update(dt,current_time, self.walls, self.player)
         self.actions.update(dt, current_time, self.player)
         util.gfx_group.update(dt)
         self.update_viewport()
@@ -89,8 +89,8 @@ class Level(object):
         dirty = []
         util.gfx_group.clear(self.image, self.background)
         self.all_sprites.clear(self.image, self.background)
-        util.gfx_group.draw(self.image)
         self.all_sprites.draw(self.image)
+        util.gfx_group.draw(self.image)
         rect1 = surface.blit(self.image, (0,0), self.viewport)
         rect2 = self.hud.render(surface)
         dirty.extend((rect1, rect2))
@@ -114,17 +114,19 @@ class InfectedWall(pg.sprite.DirtySprite):
         super(InfectedWall, self).__init__(*gorups)
         self.image = pg.Surface((util.WALL_SIZE, util.WALL_SIZE))
         self.image.fill((55,100,25))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = pos
-        self.big_rect = self.rect.inflate(1,1)
+        self.rect = self.image.get_rect(topleft=pos)
+        self.big_rect = self.rect.copy()
+        self.big_rect.inflate_ip(15,10)
+        self.big_rect.center = self.rect.center
+        self.help_text = "Prees E to Delete it"
+        self.tooltip = hud.Tooltip(self.help_text, self.rect.center)
         self.dirty = 1
-        self.font = pg.font.Font(util.FONTS['west-england.regular'], 20)
-        self.help = "Prees E to Delete it"
+        
 
     def update(self, dt, current_time, player):
         if self.big_rect.colliderect(player.rect):
-            util.msg = self.help
+            self.tooltip.add(util.gfx_group)
         else:
-            if util.msg:
-                util.msg = None
+            self.tooltip.remove(util.gfx_group)
+
 

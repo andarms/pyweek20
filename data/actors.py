@@ -234,7 +234,7 @@ class Trojan(Actor):
         super(Trojan, self).update(dt, walls)          
         if self.collide:            
             self.pop_direction(self.direction)
-            new_direction = random.choice(util.DIRECTIONS-(self.direction))            
+            new_direction = random.choice(util.DIRECTIONS)            
             self.add_direction()
             self.wait_time = current_time
 
