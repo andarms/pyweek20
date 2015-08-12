@@ -67,12 +67,14 @@ class Actor(pg.sprite.DirtySprite):
             else:
                 self.collide = False
 
-    def attack(self, dt, *groups):
+    def attack(self, dt, direction=None, *groups):
         self.dirty = 1
+        if not direction:
+            direction = self.direction
         if self.cooldown > 0:
             self.cooldown -= dt
         else:
-            Bullet(self.rect.center, self.direction, *groups)
+            Bullet(self.rect.center, direction, *groups)
             self.cooldown = self.cooldowntime
 
     def take_damage(self, damage):
@@ -85,6 +87,7 @@ class Player(Actor):
         self.image.fill((56,153,253))
         self.speed = 300
         self.bullets = pg.sprite.Group()
+        self.cooldowntime = 0.4
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -106,8 +109,9 @@ class Player(Actor):
         if self.hp <= 0:
             util.msg = "Game Over"
         super(Player, self).update(dt, walls)
-        if keys[pg.K_d]:
-            self.attack(dt, self.bullets)
+        for key in util.ATTACK_KEYS:
+            if keys[key]:
+                self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
             bug.take_damage(35)
@@ -219,9 +223,9 @@ class Trojan(Actor):
         x_sight = self.rect.x in xrange(player.rect.x-32, player.rect.x+32)
         y_sight = self.rect.y in xrange(player.rect.y-32, player.rect.y+32)
         if y_sight and self.direction in ("LEFT", "RIGHT"): 
-            self.attack(dt, self.bullets)
+            self.attack(dt, self.direction, self.bullets)
         if x_sight and self.direction in ("UP", "DOWN"):
-            self.attack(dt, self.bullets)
+            self.attack(dt, self.direction, self.bullets)
         if pg.sprite.spritecollide(player, self.bullets,True):
             player.take_damage(5)
 

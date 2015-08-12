@@ -124,13 +124,13 @@ class InfectedWall(pg.sprite.DirtySprite):
         self.death = 0
         self.dirty = 1
         self.time = 0.0
-        self.delay = 50
-        
+        self.delay = 50        
 
     def update(self, dt, current_time, player, keys):
         if self.death == 100:
             self.kill()
             self.tooltip.kill()
+            player.dirty = 1
             del self
             return False
 
@@ -148,6 +148,3 @@ class InfectedWall(pg.sprite.DirtySprite):
                 self.tooltip.change_text("Deleting %d" % (self.death))
                 self.death += 1
             self.time = current_time
-
-
-

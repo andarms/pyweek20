@@ -41,7 +41,9 @@ class Tooltip(pg.sprite.Sprite):
     def __init__(self, text, (x, y)):
         super(Tooltip, self).__init__()
         self.text = text
-        self.image = FONT.render(text, False, (255, 255, 255))
+        self.bg = (0,0,0)
+        self.fg = (255, 255, 255)
+        self.image = FONT.render(text, False, self.fg, self.bg)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.centery = y - 32
@@ -50,7 +52,7 @@ class Tooltip(pg.sprite.Sprite):
         if not self.text == text:
             self.text = text
             x, y = self.rect.center
-            self.image = FONT.render(text, False, (255, 255, 255))
+            self.image = FONT.render(text, False, self.fg, self.bg)
             self.rect = self.image.get_rect()
             self.rect.centerx = x
             self.rect.centery = y
