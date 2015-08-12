@@ -11,6 +11,7 @@
 - ~~collisions~~
 - transitions
 - ~~viewport~~
+- random generation
 
 ### Enemies:
 - ~~Bugs~~
@@ -24,7 +25,7 @@
 - ~~RPG 4-ways movement~~
 - ~~Shooting~~
 - Collect items
-- Hack items
+- ~~Hack items~~
  
 ### Menu
 ### HUD:
@@ -33,5 +34,5 @@
 - ~~tooltips~~
 
 ### Other
-- Splah type game name
+- Splash: type game name
 - fix death bug
