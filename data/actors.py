@@ -80,6 +80,10 @@ class Actor(pg.sprite.DirtySprite):
     def take_damage(self, damage):
         self.hp -= damage
         self.dirty = 1
+        if self.hp <= 0:
+            self.kill()
+            del self
+            return False
 
 class Player(Actor):
     def __init__(self, pos, *groups):
@@ -106,8 +110,6 @@ class Player(Actor):
             super(Player, self).pop_direction(direction)
 
     def update(self, dt, keys, enemies, walls):
-        if self.hp <= 0:
-            util.msg = "Game Over"
         super(Player, self).update(dt, walls)
         for key in util.ATTACK_KEYS:
             if keys[key]:

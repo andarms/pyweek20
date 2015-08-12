@@ -3,16 +3,9 @@ import pygame as pg
 
 from ... import util, actors, hud
 
-def clear_callback(surface, rect):
-    """
-    We need this callback because the clearing background contains
-    transparency.  We need to fill the rect with transparency first.
-    """
-    surface.fill((0,0,0,0), rect)
-
 class Level(object):
     """docstring for Level"""
-    def __init__(self):
+    def __init__(self, player):
         w = len(util.WORLD[0])*util.WALL_SIZE
         h = len(util.WORLD)*util.WALL_SIZE
         self.image = pg.Surface((w,h))
@@ -26,10 +19,8 @@ class Level(object):
         self.walls = self.make_walls()
         self.enemies = self.make_enemies()
         self.player_singleton = pg.sprite.GroupSingle()
-        self.player = actors.Player([50,50], self.player_singleton, 
-                                        self.all_sprites)
-        self.viewport = util.SCREEN_RECT.copy()
-        self.hud = hud.HUD()
+        player.add(self.player_singleton, self.all_sprites)
+        self.viewport = util.SCREEN_RECT.copy()        
 
     def make_walls(self):
         x = 0
@@ -61,40 +52,40 @@ class Level(object):
         return enemies
 
     def handle_events(self, event):
-        self.player.handle_events(event)
+        self.player_singleton.sprite.handle_events(event)
 
-    def update(self, dt, current_time, keys):       
-        self.player_singleton.update(dt, keys, self.enemies, self.walls)
-        self.enemies.update(dt,current_time, self.walls, self.player)
-        self.actions.update(dt, current_time, self.player, keys)
-        util.gfx_group.update(dt)
-        self.update_viewport()
-        self.hud.update(self.player)
+    def update(self, dt, current_time, keys):
+        if self.player_singleton.sprite:
+            player = self.player_singleton.sprite
+            self.player_singleton.update(dt, keys, self.enemies, self.walls)
+            self.enemies.update(dt, current_time, self.walls, player)
+            self.actions.update(dt, current_time, player, keys)
+            util.gfx_group.update(dt)
+            self.update_viewport()
+        else:
+            self.hud.set_message("Game over")
 
         for sprite in self.all_sprites:
             layer = self.all_sprites.get_layer_of_sprite(sprite)
             if layer != sprite.rect.bottom:
                 self.all_sprites.change_layer(sprite, sprite.rect.bottom)
 
+        # redraw walls
         hits = pg.sprite.groupcollide(self.walls, util.gfx_group, False, True)
         if hits:
             for wall in hits:
                 wall.dirty = 1
 
     def update_viewport(self):
-        self.viewport.center = self.player.rect.center
+        self.viewport.center = self.player_singleton.sprite.rect.center
         self.viewport.clamp_ip(self.rect)
 
     def render(self, surface):
-        dirty = []
         util.gfx_group.clear(self.image, self.background)
         self.all_sprites.clear(self.image, self.background)
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
-        rect1 = surface.blit(self.image, (0,0), self.viewport)
-        rect2 = self.hud.render(surface)
-        dirty.extend((rect1, rect2))
-        return dirty
+        return surface.blit(self.image, (0,0), self.viewport)       
 
 
 

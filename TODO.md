@@ -19,7 +19,8 @@
 - Kamikaze enemies
 - ~~Shooting~~
 - collision
-- explotin
+- explotion
+- boss
  
 ### Player: 
 - ~~RPG 4-ways movement~~
