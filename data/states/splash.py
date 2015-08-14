@@ -31,7 +31,7 @@ class SplashState(state._State):
     def render(self, surface):
         self.image.fill(self.bg_color)
         self.image.blit(self.titleSurface, util.SCREEN_RECT.center)
-        return surface.blit(self.image, (0,0))
+        surface.blit(self.image, (0,0))
 
 
 

@@ -17,6 +17,7 @@ class Actor(pg.sprite.DirtySprite):
         self.direction_stack = []
         self.cooldowntime = 0.1 #seg
         self.cooldown = 0.0
+        self.is_explosive = False
         self.hp = 100
         self.collide = False
         self.dirty = 1
@@ -115,9 +116,18 @@ class Player(Actor):
 
     def update(self, dt, keys, enemies, walls):
         super(Player, self).update(dt, walls)
+        # Shooting
         for key in util.ATTACK_KEYS:
             if keys[key]:
                 self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
+        # Collisions with enemies
+        enes = pg.sprite.spritecollide(self, enemies, False)
+        if enes:
+            for e in enes:
+                if e.is_explosive:
+                    self.take_damage(random.randint(5,10))
+                    e.kill()
+        # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
             value = bug.take_damage(35)
@@ -133,6 +143,7 @@ class Bug(Actor):
         self.wait_time = 0.0
         self.change_direction()
         self.value = 10
+        self.is_explosive = True
 
     def update(self, dt, current_time, walls, *args):
         """

@@ -79,7 +79,7 @@ class Level(object):
         self.all_sprites.clear(self.image, self.background)
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
-        return surface.blit(self.image, (0,0), self.viewport)       
+        surface.blit(self.image, (0,0), self.viewport)       
 
 
 

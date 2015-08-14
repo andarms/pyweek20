@@ -38,9 +38,6 @@ class GameState(state._State):
             self.done = True
 
     def render(self, surface):
-        dirty = []
         surface.fill(self.bg_color)
-        rect1 = self.level.render(surface)
-        rect2 = self.hud.render(surface)
-        dirty.extend((rect1, rect2))
-        return dirty
+        self.level.render(surface)
+        self.hud.render(surface)
