@@ -6,6 +6,9 @@ import pygame as pg
 
 import util, hud
 
+def hit_rect_collide(left, right):
+    return left.hit_rect.colliderect(right.rect)
+
 class Actor(pg.sprite.Sprite):
     """docstring for Actor"""
     def __init__(self, pos, spritesheet, size, *groups):
@@ -28,6 +31,8 @@ class Actor(pg.sprite.Sprite):
         self.dirty = 1
         self.animate()
         self.rect = self.image.get_rect(topleft=pos)
+        self.hit_rect = pg.Rect(0, 0, self.rect.w, self.rect.h-32)
+        self.hit_rect.midbottom = self.rect.midbottom
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -69,6 +74,7 @@ class Actor(pg.sprite.Sprite):
             direction_vector = util.DIR_VECTORS[self.direction]
             self.rect.x += direction_vector[0] * self.speed * dt
             self.rect.y += direction_vector[1] * self.speed * dt
+            self.hit_rect.center = self.rect.center
         self.check_collitions(walls)    
 
     def animate(self, now=0):
@@ -86,19 +92,20 @@ class Actor(pg.sprite.Sprite):
 
 
     def check_collitions(self, walls):
-        for wall in walls:
-            if self.rect.colliderect(wall.rect):
-                if self.direction == "LEFT":
-                    self.rect.left = wall.rect.right
-                elif self.direction == "RIGHT":
-                    self.rect.right = wall.rect.left
-                elif self.direction == "UP":
-                    self.rect.top = wall.rect.bottom                    
-                elif self.direction == "DOWN":
-                    self.rect.bottom = wall.rect.top
-                self.collide = True
-            else:
-                self.collide = False
+        wall = pg.sprite.spritecollideany(self, walls, hit_rect_collide)
+        if wall:
+            if self.direction == "LEFT":
+                self.hit_rect.left = wall.rect.right
+            elif self.direction == "RIGHT":
+                self.hit_rect.right = wall.rect.left
+            elif self.direction == "UP":
+                self.hit_rect.top = wall.rect.bottom                    
+            elif self.direction == "DOWN":
+                self.hit_rect.bottom = wall.rect.top
+            self.rect.center = self.hit_rect.center
+            self.collide = True
+        else:
+            self.collide = False
 
     def attack(self, dt, direction=None, *groups):
         if not direction:
