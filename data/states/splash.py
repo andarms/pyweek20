@@ -10,7 +10,7 @@ class SplashState(state._State):
         self.text_color = (155,255,155)
         self.duration = 3 #seg
         self.image = pg.Surface(util.SCREEN_SIZE)
-        self.next = "Game"
+        self.next = "MainMenu"
         self.title = "HackerMan"
         self.titleSurface = self.make_title_surface()
 
