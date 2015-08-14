@@ -29,11 +29,11 @@ class MainMenuState(MenuState):
     def __init__(self):
         super(MainMenuState, self).__init__()
         self.options = [
-            {"text":"Play", "nested": False, "activate": self.play},
-            {"text":"Higscores", "nested": False, "activate": self.play},
-            {"text":"How to play", "nested": False, "activate": self.play},
-            {"text":"Credits", "nested": False, "activate": self.play},
-            {"text":"Quit", "nested": False, "activate": self.exit}
+            {"text":"PLAY", "nested": False, "activate": self.play},
+            {"text":"HIGHSCORES", "nested": False, "activate": self.play},
+            {"text":"HOW TO PLAY", "nested": False, "activate": self.play},
+            {"text":"CREDITS", "nested": False, "activate": self.play},
+            {"text":"QUIT", "nested": False, "activate": self.exit}
         ]
         self.set_options(self.options)
 

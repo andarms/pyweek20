@@ -87,6 +87,8 @@ class Actor(pg.sprite.Sprite):
 
     def kill(self, exploded=False):
         super(Actor, self).kill()
+        for _ in xrange(random.randint(25,50)):
+            Fragment(self.rect.center)
         if not exploded:
             hud.KillLabel(self.rect.topleft, self.value)
         del self
@@ -191,7 +193,7 @@ class ChasingBug(Bug):
         """
         Simple chasing, random choose to follow the player
         vertical or horizontal.
-        Player rect player.rect pygame.Rect
+        Player rect player.rect pg.Rect
         """
         if current_time-self.wait_time > self.wait_delay:
             x_diff = self.rect.x - player.rect.x
@@ -278,6 +280,39 @@ class Trojan(Actor):
         return False
 
 
+class Fragment(pg.sprite.Sprite):
+    """Explosions fragments"""
+    def __init__(self, pos, layer = 9, *groups):
+        self.pos = [0.0,0.0]
+        self.pos[0] = pos[0]
+        self.pos[1] = pos[1]
+        super(Fragment, self).__init__(*groups)
+        self.add(util.gfx_group)
+        self._layer = layer
+        self.max_speed = 50
+        self.dx = random.randint(-self.max_speed, self.max_speed)
+        self.dy = random.randint(-self.max_speed, self.max_speed)
+        self.lifetime = 1.5
+        self.image = pg.Surface((10,10))
+        self.image.set_colorkey((0,0,0))
+        color = random.randint(25,255)
+        self.color = (color, color, color)
+        size = random.randint(2,5)
+        pg.draw.rect(self.image, self.color, (0,0, size, size))
+        self.image = self.image.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+        self.time = 0.0
+        
+    def update(self, seconds):
+        self.time += seconds
+        if self.time > self.lifetime:
+            self.kill() 
+        self.pos[0] += self.dx * seconds
+        self.pos[1] += self.dy * seconds
+        self.rect.centerx = round(self.pos[0],0)
+        self.rect.centery = round(self.pos[1],0)
+    
 
 class Bullet(pg.sprite.Sprite):
     """docstring for Bullet"""

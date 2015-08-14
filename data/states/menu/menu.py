@@ -11,7 +11,7 @@ class Option(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, *groups)
         self.selected = False
         self.normal_image = FONT.render(text, 1, (255, 255, 255))
-        self.highlight_image = BIG_FONT.render("_ " + text, 1, (155,255,155))
+        self.highlight_image = BIG_FONT.render(text, 1, (155,255,155))
         self.image = self.normal_image
         self.rect = self.image.get_rect()
         self.rect.y = y
