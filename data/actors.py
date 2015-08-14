@@ -80,6 +80,8 @@ class Actor(pg.sprite.DirtySprite):
     def take_damage(self, damage):
         self.hp -= damage
         self.dirty = 1
+        if self.hp <= 0:
+            return self.value
 
     def kill(self):
         super(Actor, self).kill()
@@ -92,7 +94,8 @@ class Player(Actor):
         self.speed = 300
         self.bullets = pg.sprite.Group()
         self.cooldowntime = 0.4
-        self.hp = 5
+        self.score = 0
+        self.value = 0
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -117,7 +120,9 @@ class Player(Actor):
                 self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            bug.take_damage(35)    
+            value = bug.take_damage(35)
+            if value:
+                self.score += value
 
 class Bug(Actor):
     """docstring for Bug"""
@@ -127,6 +132,7 @@ class Bug(Actor):
         self.wait_delay = random.randint(*self.wait_range)
         self.wait_time = 0.0
         self.change_direction()
+        self.value = 10
 
     def update(self, dt, current_time, walls, *args):
         """
@@ -162,6 +168,7 @@ class ChasingBug(Bug):
         super(ChasingBug, self).__init__(pos, *groups)
         self.image.fill((182,185,52))
         self.wait_delay = 500 #mseg
+        self.value = 15
 
     def update(self, dt, current_time, walls, player):
         """
@@ -197,6 +204,7 @@ class Trojan(Actor):
         self.hp = 250
         self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
+        self.value = 50
 
     def update(self, dt, current_time, walls, player):
         """

@@ -68,8 +68,8 @@ class StateManager(object):
 
     def render(self):
         self.screen.fill(self.bg_color)
-        dirty = self.state.render(self.screen)
-        pg.display.update(dirty)
+        self.state.render(self.screen)
+        pg.display.update()
 
     def main_loop(self):
         while not self.done:
