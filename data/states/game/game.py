@@ -16,12 +16,11 @@ class GameState(state._State):
         self.game_over = False
         self.player = self.player = actors.Player([50,50])
         self.level = level.Level(self.player)
+        self.hud = hud.HUD()
 
     def clear(self):
         super(GameState, self).clear()
         self.data['player'] = self.player
-        self.player = None
-        self.level = None
         return self.data
 
     def handle_events(self, event):
@@ -29,11 +28,14 @@ class GameState(state._State):
 
     def update(self, dt, current_time, keys):
         if self.player.hp > 0:
-            self.level.update(dt, current_time, keys)
             self.hud.update(self.player)
             if self.level.is_clear():
                 self.next = "MissionComplete"
-                self.done = True    
+                self.hud.set_message("Level clear")
+                if keys[pg.K_RETURN]:
+                    self.done = True
+            else:
+                self.level.update(dt, current_time, keys)
         else:
             self.player.kill()
             self.next = "GameOver"
