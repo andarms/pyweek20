@@ -16,7 +16,7 @@ DIR_VECTORS = {
     "LEFT":  (-1, 0),
     "RIGHT":  (1, 0)
 }
-DIRECTIONS = ("UP", "LEFT", "DOWN", "RIGHT")
+DIRECTIONS = ("UP", "DOWN","RIGHT", "LEFT")
 ATTACK_KEYS = {
     pg.K_w:  "UP",
     pg.K_s: "DOWN",
@@ -92,6 +92,23 @@ def load_all_fonts(directory, accept=(".ttf",)):
     """
     return load_all_music(directory, accept)
 
+def split_sheet(sheet, size, columns, rows):
+    """
+    Divide a loaded sprite sheet into subsurfaces.
+    
+    The argument size is the width and height of each frame (w,h)
+    columns and rows are the integer number of cells horizontally and
+    vertically.
+    """
+    subsurfaces = []
+    for y in range(rows):
+        row = []
+        for x in range(columns): 
+            rect = pg.Rect((x*size[0], y*size[1]), size)
+            row.append(sheet.subsurface(rect))
+        subsurfaces.append(row)
+    return subsurfaces
+
 
 # Initialization
 pg.init()
@@ -104,3 +121,4 @@ bullets_group = pg.sprite.Group()
 
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))
+GFX = load_all_gfx("resources")

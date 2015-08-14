@@ -1,5 +1,6 @@
 import math
 import random
+import itertools
 
 import pygame as pg
 
@@ -7,21 +8,38 @@ import util, hud
 
 class Actor(pg.sprite.Sprite):
     """docstring for Actor"""
-    def __init__(self, pos, *groups):
+    def __init__(self, pos, spritesheet, size, *groups):
         super(Actor, self).__init__(*groups)
-        self.pos = pos
-        self.image = pg.Surface((32,32)) # replace for image load
-        self.image.fill((226,51,74))
-        self.rect = self.image.get_rect(topleft=pos)
         self.speed = 250 #px/seg
-        self.direction = "UP"
+        self.direction = "DOWN"
+        self.old_direction = None
         self.direction_stack = []
         self.cooldowntime = 0.1 #seg
-        self.cooldown = 0.0
+        self.cooldown = 0.5
         self.is_explosive = False
         self.hp = 100
         self.collide = False
+        self.animate_timer  = 0.0
+        self.animate_fps = 10.0
+        self.size = size
+        self.idelframes = {}
+        self.walkframes = None
+        self.frames = self.make_frame_dict(self.get_frames(spritesheet))
         self.dirty = 1
+        self.animate()
+        self.rect = self.image.get_rect(topleft=pos)
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for i,direct in enumerate(util.DIRECTIONS):
+            self.idelframes[direct] = frames[i][3]
+            frame_dict[direct] = itertools.cycle(frames[i])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 4, 4)
+        return all_frames
 
     def add_direction(self, direction):
         """
@@ -43,15 +61,29 @@ class Actor(pg.sprite.Sprite):
         if self.direction_stack:
             self.direction = self.direction_stack[-1]
 
-    def update(self, dt, walls):
+    def update(self, dt, now, walls):
+        self.animate(now)
         if self.hp <= 0:
             self.kill()
         if self.direction_stack:
-            self.dirty = 1
             direction_vector = util.DIR_VECTORS[self.direction]
             self.rect.x += direction_vector[0] * self.speed * dt
             self.rect.y += direction_vector[1] * self.speed * dt
-        self.check_collitions(walls)
+        self.check_collitions(walls)    
+
+    def animate(self, now=0):
+        if self.direction != self.old_direction:
+            self.walkframes = self.frames[self.direction]
+            self.old_direction = self.direction
+            self.dirty = 1
+        if self.dirty or now-self.animate_timer > 1000/self.animate_fps:
+            if self.direction_stack:
+                self.image = next(self.walkframes)
+                self.animate_timer = now
+                self.dirty = 0
+            else:
+                self.image = self.idelframes[self.direction]
+
 
     def check_collitions(self, walls):
         for wall in walls:
@@ -65,12 +97,10 @@ class Actor(pg.sprite.Sprite):
                 elif self.direction == "DOWN":
                     self.rect.bottom = wall.rect.top
                 self.collide = True
-                self.dirty = 1
             else:
                 self.collide = False
 
     def attack(self, dt, direction=None, *groups):
-        self.dirty = 1
         if not direction:
             direction = self.direction
         if self.cooldown > 0:
@@ -95,8 +125,9 @@ class Actor(pg.sprite.Sprite):
 
 class Player(Actor):
     def __init__(self, pos, *groups):
-        super(Player, self).__init__(pos, *groups)
-        self.image.fill((56,153,253))
+        size = (32,64)
+        image = "player"
+        super(Player, self).__init__(pos, image, size, *groups)
         self.speed = 300
         self.bullets = pg.sprite.Group()
         self.cooldowntime = 0.4
@@ -119,8 +150,8 @@ class Player(Actor):
             direction = util.CONTROLS[key]
             super(Player, self).pop_direction(direction)
 
-    def update(self, dt, keys, enemies, walls):
-        super(Player, self).update(dt, walls)
+    def update(self, dt, now, keys, enemies, walls):
+        super(Player, self).update(dt, now, walls)
         # Shooting
         for key in util.ATTACK_KEYS:
             if keys[key]:
@@ -153,16 +184,16 @@ class Bug(Actor):
         self.value = 10
         self.is_explosive = True
 
-    def update(self, dt, current_time, walls, *args):
+    def update(self, dt, now, walls, *args):
         """
         Choose a new direction if wait_time has expired or the sprite
         collide with thw walls.
         """        
-        if current_time-self.wait_time > self.wait_delay:
-            self.change_direction(current_time)
-        super(Bug, self).update(dt, walls)
+        if now-self.wait_time > self.wait_delay:
+            self.change_direction(now)
+        super(Bug, self).update(dt, now, walls)
         if self.collide:
-            self.change_direction(current_time)
+            self.change_direction(now)
 
 
     def change_direction(self, now=0, direction=None):
@@ -189,13 +220,13 @@ class ChasingBug(Bug):
         self.wait_delay = 500 #mseg
         self.value = 15
 
-    def update(self, dt, current_time, walls, player):
+    def update(self, dt, now, walls, player):
         """
         Simple chasing, random choose to follow the player
         vertical or horizontal.
         Player rect player.rect pg.Rect
         """
-        if current_time-self.wait_time > self.wait_delay:
+        if now-self.wait_time > self.wait_delay:
             x_diff = self.rect.x - player.rect.x
             y_diff = self.rect.y - player.rect.y
             first = random.choice(('vertical', 'horizontal'))
@@ -205,10 +236,10 @@ class ChasingBug(Bug):
             else:
                 if y_diff < 0: direction = "DOWN"
                 else: direction = "UP"
-            self.change_direction(current_time, direction)
-        super(Bug, self).update(dt, walls)
+            self.change_direction(now, direction)
+        super(Bug, self).update(dt, now, walls)
         if self.collide:
-            self.change_direction(current_time)
+            self.change_direction(now)
         
 class Trojan(Actor):
     def __init__(self, pos, *groups):
@@ -225,11 +256,11 @@ class Trojan(Actor):
         self.bullets = pg.sprite.Group()
         self.value = 50
 
-    def update(self, dt, current_time, walls, player):
+    def update(self, dt, now, walls, player):
         """
         Better Chase. Still not been the better AI but work for me.
         """
-        if current_time-self.wait_time > self.wait_delay:
+        if now-self.wait_time > self.wait_delay:
             self.direction_stack = []
             self.goal_x = player.rect.x
             self.goal_y = player.rect.y
@@ -247,7 +278,7 @@ class Trojan(Actor):
                 else:
                     self.add_direction(dir_y)
                     self.next_direction = dir_x
-            self.wait_time = current_time
+            self.wait_time = now
         
         # Attack if player
         x_sight = self.rect.x in xrange(player.rect.x-32, player.rect.x+32)
@@ -267,12 +298,12 @@ class Trojan(Actor):
             if self.next_direction:
                 self.add_direction(self.next_direction)
                 self.next_direction = None
-        super(Trojan, self).update(dt, walls)          
+        super(Trojan, self).update(dt, now, walls)          
         if self.collide:            
             self.pop_direction(self.direction)
             new_direction = random.choice(util.DIRECTIONS)            
             self.add_direction()
-            self.wait_time = current_time
+            self.wait_time = now
 
     def reach_goal(self):
         if self.rect.x == self.goal_x or self.rect.y == self.goal_y:            
@@ -320,7 +351,7 @@ class Bullet(pg.sprite.Sprite):
         super(Bullet, self).__init__(*groups)
         self.add(util.gfx_group, util.bullets_group)
         self.lifetime = 3 #seg
-        self.color = (255, 51, 51)
+        self.color = (51, 255, 255)
         w, h= (10, 2)
         if direction == "UP" or direction == "DOWN":
             w, h = h, w

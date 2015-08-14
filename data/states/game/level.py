@@ -40,6 +40,7 @@ class Level(object):
 
     def make_enemies(self):
         enemies = pg.sprite.Group()
+        return enemies
         while len(enemies) < self.max_enemies:
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
@@ -51,11 +52,11 @@ class Level(object):
         actors.Trojan((x, y), enemies, self.all_sprites)
         return enemies
 
-    def update(self, dt, current_time, keys):
-        self.player_singleton.update(dt, keys, self.enemies, self.walls)
+    def update(self, dt, now, keys):
+        self.player_singleton.update(dt, now, keys, self.enemies, self.walls)
         player = self.player_singleton.sprite
-        self.enemies.update(dt, current_time, self.walls, player)
-        self.actions.update(dt, current_time, player, keys)
+        self.enemies.update(dt, now, self.walls, player)
+        self.actions.update(dt, now, player, keys)
         util.gfx_group.update(dt)
         self.update_viewport()
         
@@ -77,8 +78,7 @@ class Level(object):
         return False
 
     def render(self, surface):
-        util.gfx_group.clear(self.image, self.background)
-        self.all_sprites.clear(self.image, self.background)
+        self.image.fill((0,100,10))
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
@@ -119,7 +119,7 @@ class InfectedWall(pg.sprite.Sprite):
         del self
         return False
 
-    def update(self, dt, current_time, player, keys):
+    def update(self, dt, now, player, keys):
         if self.death == 100:
             player.dirty = 1
             player.score += random.randint(20,50)
@@ -135,8 +135,8 @@ class InfectedWall(pg.sprite.Sprite):
             self.deleting = False
             self.death = 0      
             self.tooltip.change_text(self.help_text)
-        if current_time-self.time > self.delay:
+        if now-self.time > self.delay:
             if self.deleting:
                 self.tooltip.change_text("Deleting %d" % (self.death))
                 self.death += 1
-            self.time = current_time
+            self.time = now
