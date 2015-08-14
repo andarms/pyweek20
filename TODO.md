@@ -36,4 +36,5 @@
 
 ### Other
 - Splash: type game name
-- fix death bug
+- s~~fix death bugs~~
+- higscore

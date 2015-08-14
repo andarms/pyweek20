@@ -12,7 +12,6 @@ class GameState(state._State):
         self.game_over = False
 
     def start(self, data, current_time):
-        print "iniciando game"
         super(GameState, self).start(data, current_time)
         self.game_over = False
         self.player = self.player = actors.Player([50,50])
@@ -32,6 +31,9 @@ class GameState(state._State):
         if self.player.hp > 0:
             self.level.update(dt, current_time, keys)
             self.hud.update(self.player)
+            if self.level.is_clear():
+                self.next = "MissionComplete"
+                self.done = True    
         else:
             self.player.kill()
             self.next = "GameOver"

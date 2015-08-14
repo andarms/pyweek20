@@ -69,7 +69,12 @@ class Level(object):
 
     def update_viewport(self):
         self.viewport.center = self.player_singleton.sprite.rect.center
-        self.viewport.clamp_ip(self.rect)        
+        self.viewport.clamp_ip(self.rect)
+
+    def is_clear(self):
+        if not self.actions:
+            return True
+        return False
 
     def render(self, surface):
         util.gfx_group.clear(self.image, self.background)

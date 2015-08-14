@@ -104,7 +104,7 @@ class Player(Actor):
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             self.add_direction(event.key)                       
-        if event.type == pg.KEYUP: 
+        if event.type == pg.KEYUP:
             self.pop_direction(event.key)
 
     def add_direction(self, key):
@@ -135,7 +135,8 @@ class Player(Actor):
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            value = bug.take_damage(35)
+            damage = random.randint(5,40)
+            value = bug.take_damage(damage)
             if value:
                 self.score += value
 
@@ -254,7 +255,9 @@ class Trojan(Actor):
         if x_sight and self.direction in ("UP", "DOWN"):
             self.attack(dt, self.direction, self.bullets)
         if pg.sprite.spritecollide(player, self.bullets,True):
-            player.take_damage(5)
+            damage = random.randint(5,15)
+            player.take_damage(damage)
+            hud.DamageLabel(player.rect.topleft, damage)
 
         # movement
         if self.reach_goal():
