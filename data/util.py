@@ -48,12 +48,6 @@ WORLD = [
     "####################################################"
 ]
 WALL_SIZE = 32
-CMDS = ('hackerman$ a%6dgj45s4dgugk', 
-        'hackerman$ 55r4/&38r4fefs5', 
-        'hackerman$ (gsdkj7*7ehrh5y', 
-        'hackerman$ 68eq3dedrgrgda2', 
-        'hackerman$ 34/(13454qwe#f3', 
-        'hackerman$ #12-/|sdsdfsd"4')
 
 
 # Helper functions
@@ -106,6 +100,7 @@ SCREEN_RECT = SCREEN.get_rect()
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 gfx_group = pg.sprite.Group()
+bullets_group = pg.sprite.Group()
 
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))

@@ -29,6 +29,8 @@ class SplashState(state._State):
 
     def update(self, dt, current_time, keys):
         self.duration -= dt
+        if self.duration <= 0:
+            self.done = True
 
     def render(self, surface):
         self.image.fill(self.bg_color)

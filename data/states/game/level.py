@@ -14,7 +14,7 @@ class Level(object):
         self.background = self.background.convert()
         self.background.fill((0,0,0))
         self.max_enemies = 27
-        self.all_sprites = pg.sprite.LayeredDirty()
+        self.all_sprites = pg.sprite.LayeredUpdates()
         self.actions = pg.sprite.Group()
         self.walls = self.make_walls()
         self.enemies = self.make_enemies()
@@ -25,7 +25,7 @@ class Level(object):
     def make_walls(self):
         x = 0
         y = 0
-        walls = pg.sprite.LayeredDirty()
+        walls = pg.sprite.Group()
         for row in util.WORLD:
             for col in row:
                 if col == "#":
@@ -39,7 +39,7 @@ class Level(object):
         return walls
 
     def make_enemies(self):
-        enemies = pg.sprite.LayeredDirty()
+        enemies = pg.sprite.Group()
         while len(enemies) < self.max_enemies:
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
@@ -64,11 +64,8 @@ class Level(object):
             if layer != sprite.rect.bottom:
                 self.all_sprites.change_layer(sprite, sprite.rect.bottom)
 
-        # redraw walls
-        hits = pg.sprite.groupcollide(self.walls, util.gfx_group, False, True)
-        if hits:
-            for wall in hits:
-                wall.dirty = 1
+        # Remove bullets when collides with walls
+        pg.sprite.groupcollide(self.walls, util.bullets_group, False, True)
 
     def update_viewport(self):
         self.viewport.center = self.player_singleton.sprite.rect.center
@@ -83,7 +80,7 @@ class Level(object):
 
 
 
-class Wall(pg.sprite.DirtySprite):
+class Wall(pg.sprite.Sprite):
     """docstring for Wall"""
     def __init__(self, pos, *gorups):
         super(Wall, self).__init__(*gorups)
@@ -93,7 +90,7 @@ class Wall(pg.sprite.DirtySprite):
         self.rect.topleft = pos
         self.dirty = 1
 
-class InfectedWall(pg.sprite.DirtySprite):
+class InfectedWall(pg.sprite.Sprite):
     """docstring for Wall"""
     def __init__(self, pos, *gorups):
         super(InfectedWall, self).__init__(*gorups)
@@ -109,15 +106,20 @@ class InfectedWall(pg.sprite.DirtySprite):
         self.death = 0
         self.dirty = 1
         self.time = 0.0
-        self.delay = 50        
+        self.delay = 50
+
+    def kill(self):
+        super(InfectedWall, self).kill()
+        self.tooltip.kill()
+        del self
+        return False
 
     def update(self, dt, current_time, player, keys):
         if self.death == 100:
-            self.kill()
-            self.tooltip.kill()
             player.dirty = 1
-            del self
-            return False
+            player.score += random.randint(20,50)
+            hud.SuccessLabel(self.big_rect.topleft, "Deleted")
+            return self.kill()
 
         if self.big_rect.colliderect(player.rect):
             self.tooltip.add(util.gfx_group)

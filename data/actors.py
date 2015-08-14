@@ -3,8 +3,9 @@ import random
 
 import pygame as pg
 
-import util
-class Actor(pg.sprite.DirtySprite):
+import util, hud
+
+class Actor(pg.sprite.Sprite):
     """docstring for Actor"""
     def __init__(self, pos, *groups):
         super(Actor, self).__init__(*groups)
@@ -84,8 +85,10 @@ class Actor(pg.sprite.DirtySprite):
         if self.hp <= 0:
             return self.value
 
-    def kill(self):
+    def kill(self, exploded=False):
         super(Actor, self).kill()
+        if not exploded:
+            hud.KillLabel(self.rect.topleft, self.value)
         del self
 
 class Player(Actor):
@@ -125,8 +128,10 @@ class Player(Actor):
         if enes:
             for e in enes:
                 if e.is_explosive:
-                    self.take_damage(random.randint(5,10))
-                    e.kill()
+                    damage = random.randint(5,10)
+                    self.take_damage(damage)
+                    hud.DamageLabel(self.rect.topleft, damage)
+                    e.kill(True)
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
@@ -271,11 +276,11 @@ class Trojan(Actor):
 
 
 
-class Bullet(pg.sprite.DirtySprite):
+class Bullet(pg.sprite.Sprite):
     """docstring for Bullet"""
     def __init__(self, pos, direction, *groups):
         super(Bullet, self).__init__(*groups)
-        self.add(util.gfx_group)
+        self.add(util.gfx_group, util.bullets_group)
         self.lifetime = 3 #seg
         self.color = (255, 51, 51)
         w, h= (10, 2)

@@ -97,4 +97,37 @@ class Tooltip(pg.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.centerx = x
             self.rect.centery = y
+
+class FloatingLabel(pg.sprite.Sprite):
+    def __init__(self, pos, value, color):
+        super(FloatingLabel, self).__init__(util.gfx_group)
+        self.image = FONT.render(str(value), False, color)
+        self.rect = self.image.get_rect(topleft=pos)
+        self.duration = 1 #seg
+
+    def update(self, dt):
+        self.duration -= dt
+        if self.duration <= 0:
+            self.kill()
+        else:
+            self.rect.y -= 100*dt
+
+class DamageLabel(FloatingLabel):
+    def __init__(self, pos, value):
+        color = (255,50,50)
+        super(DamageLabel, self).__init__(pos, -value, color)
+
+class KillLabel(FloatingLabel):
+    def __init__(self, pos, value):
+        color = (255,255,50)
+        super(KillLabel, self).__init__(pos, value, color)
+
+class SuccessLabel(FloatingLabel):
+    def __init__(self, pos, value):
+        color = (50,255,50)
+        super(SuccessLabel, self).__init__(pos, value, color)
+        
+        
+
+        
         
