@@ -18,7 +18,7 @@
 - ~~Chasing enemies~~
 - Kamikaze enemies
 - ~~Shooting~~
-- collision
+- ~~collision~~
 - explotion
 - boss
  

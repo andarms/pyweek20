@@ -20,10 +20,10 @@ class GameOverState(state._State):
         font = pg.font.Font(util.FONTS['west-england.regular'], 70)
         return font.render(self.title, False, self.text_color)
 
-
-    def update(self, dt, current_time, keys):        
-        if keys[pg.K_RETURN]:
-            self.done = True
+    def handle_events(self, event):
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_RETURN:
+                self.done = True
 
     def render(self, surface):
         self.image.fill(self.bg_color)

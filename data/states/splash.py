@@ -22,11 +22,13 @@ class SplashState(state._State):
         font = pg.font.Font(util.FONTS['west-england.regular'], 40)
         return font.render(self.title, False, self.text_color)
 
+    def handle_events(self, event):
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_RETURN:
+                self.done = True
 
     def update(self, dt, current_time, keys):
         self.duration -= dt
-        if self.duration <= 0 or keys[pg.K_RETURN]:
-            self.done = True # must be self.done
 
     def render(self, surface):
         self.image.fill(self.bg_color)
