@@ -109,7 +109,7 @@ class Actor(pg.sprite.Sprite):
         if self.cooldown > 0:
             self.cooldown -= dt
         else:
-            Bullet(self.rect.center, direction, *groups)
+            Bullet(self.rect.center, direction, self.bullet_color,  *groups)
             self.cooldown = self.cooldowntime
 
     def take_damage(self, damage):
@@ -137,6 +137,7 @@ class Player(Actor):
         self.score = 0
         self.value = 0
         self.hit_rect.h = self.rect.h-22
+        self.bullet_color = (51, 255, 255)
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -284,15 +285,55 @@ class ErrorBlock(Bug):
 
 class Virus(Bug):
     """docstring for Virus"""
-    def __init__(self, pos, *groups):
+    def __init__(self, pos, image,*groups):
         super(Virus, self).__init__(pos, "virus", *groups)
+        self.hp = 600
+        self.is_explosive = None
+        self.bullets = pg.sprite.Group()
+        self.bullet_color = (51, 51, 255)
+        self.cooldowntime = 0.5
 
     def make_frame_dict(self, frames):
         frame_dict = {}
-        for direct in enumerate(util.DIRECTIONS):
+        for direct in util.DIRECTIONS:
             self.idelframes[direct] = frames[0][0]
             frame_dict[direct] = itertools.cycle(frames[0])
         return frame_dict
+
+    def update(self, dt, now, walls, player):
+        """
+        Simple chasing, random choose to follow the player
+        vertical or horizontal.
+        Player rect player.rect pg.Rect
+        """
+        if now-self.wait_time > self.wait_delay:
+            x_diff = self.rect.x - player.rect.x
+            y_diff = self.rect.y - player.rect.y
+            first = random.choice(('vertical', 'horizontal'))
+            if first == 'horizontal':
+                if x_diff < 0: direction = "LEFT"
+                else: direction = "RIGHT"
+            else:
+                if y_diff < 0: direction = "UP"
+                else: direction = "DOWN"
+            self.change_direction(now, direction)
+
+        x_sight = self.rect.x in xrange(player.rect.x-32, player.rect.x+32)
+        y_sight = self.rect.y in xrange(player.rect.y-32, player.rect.y+32)
+        if y_sight and self.direction in ("LEFT", "RIGHT"): 
+            self.attack(dt, self.direction, self.bullets)
+        if x_sight and self.direction in ("UP", "DOWN"):
+            self.attack(dt, self.direction, self.bullets)
+        if pg.sprite.spritecollide(player, self.bullets,True):
+            damage = random.randint(5,15)
+            player.take_damage(damage)
+            hud.DamageLabel(player.rect.topleft, damage)
+
+        super(Bug, self).update(dt, now, walls)
+        if self.collide:
+            self.change_direction(now)
+
+
 
     def get_frames(self, spritesheet):
         sheet = util.GFX[spritesheet]
@@ -316,6 +357,7 @@ class Trojan(Actor):
         self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
         self.value = 50
+        self.bullet_color = (100, 100, 100)
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -421,11 +463,11 @@ class Fragment(pg.sprite.Sprite):
 
 class Bullet(pg.sprite.Sprite):
     """docstring for Bullet"""
-    def __init__(self, pos, direction, *groups):
+    def __init__(self, pos, direction, color, *groups):
         super(Bullet, self).__init__(*groups)
         self.add(util.gfx_group, util.bullets_group)
         self.lifetime = 3 #seg
-        self.color = (51, 255, 255)
+        self.color = color
         w, h= (10, 2)
         if direction == "UP" or direction == "DOWN":
             w, h = h, w

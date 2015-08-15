@@ -43,7 +43,7 @@ class Level(object):
         while len(enemies) < self.max_enemies:
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
-            bug = actors.ChasingBug((x, y), None)
+            bug = actors.Virus((x, y), None)
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
         x = random.randint(0, self.rect.w)
