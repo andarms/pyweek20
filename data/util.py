@@ -16,7 +16,8 @@ DIR_VECTORS = {
     "LEFT":  (-1, 0),
     "RIGHT":  (1, 0)
 }
-DIRECTIONS = ("UP", "DOWN","RIGHT", "LEFT")
+DIRECTIONS = ("UP", "DOWN", "LEFT", "RIGHT")
+reverse_dirs = ("RIGHT","LEFT", "DOWN", "UP" )
 ATTACK_KEYS = {
     pg.K_w:  "UP",
     pg.K_s: "DOWN",

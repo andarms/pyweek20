@@ -31,20 +31,16 @@ class Actor(pg.sprite.Sprite):
         self.dirty = 1
         self.animate()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hit_rect = pg.Rect(0, 0, self.rect.w, self.rect.h-32)
-        self.hit_rect.midbottom = self.rect.midbottom
-
-    def make_frame_dict(self, frames):
-        frame_dict = {}
-        for i,direct in enumerate(util.DIRECTIONS):
-            self.idelframes[direct] = frames[i][3]
-            frame_dict[direct] = itertools.cycle(frames[i])
-        return frame_dict
+        self.hit_rect = self.rect.copy()
+        self.hit_rect.midbottom = self.rect.midbottom  
 
     def get_frames(self, spritesheet):
-        sheet = util.GFX[spritesheet]
-        all_frames = util.split_sheet(sheet, self.size, 4, 4)
-        return all_frames
+        """ Must be overloaded in child objects"""
+        pass
+
+    def make_frame_dict(self, frames):
+        """ Must be overloaded in child objects"""
+        pass
 
     def add_direction(self, direction):
         """
@@ -140,6 +136,19 @@ class Player(Actor):
         self.cooldowntime = 0.4
         self.score = 0
         self.value = 0
+        self.hit_rect.h = self.rect.h-22
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for i,direct in enumerate(util.DIRECTIONS):
+            self.idelframes[direct] = frames[i][0]
+            frame_dict[direct] = itertools.cycle(frames[i])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 4, 4)
+        return all_frames
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -182,14 +191,35 @@ class Player(Actor):
 
 class Bug(Actor):
     """docstring for Bug"""
-    def __init__(self, pos, *groups):
-        super(Bug, self).__init__(pos, *groups)
+    def __init__(self, pos, image=None, *groups):
+        size = (32,32)
+        if not image: image = "bug"
+        super(Bug, self).__init__(pos, image, size, *groups)
         self.wait_range = (500, 2000)
         self.wait_delay = random.randint(*self.wait_range)
         self.wait_time = 0.0
         self.change_direction()
         self.value = 10
         self.is_explosive = True
+        self.animate_fps = 5.0
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for i,direct in enumerate(util.DIRECTIONS):
+            self.idelframes[direct] = frames[i][0]
+            frame_dict[direct] = itertools.cycle(frames[i])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 3, 4)
+        return all_frames
+
+    def handle_events(self, event):
+        if event.type == pg.KEYDOWN:
+            self.add_direction(event.key)                       
+        if event.type == pg.KEYUP:
+            self.pop_direction(event.key)
 
     def update(self, dt, now, walls, *args):
         """
@@ -221,9 +251,8 @@ class Bug(Actor):
 
 
 class ChasingBug(Bug):
-    def __init__(self, pos, *groups):
-        super(ChasingBug, self).__init__(pos, *groups)
-        self.image.fill((182,185,52))
+    def __init__(self, pos, image, *groups):
+        super(ChasingBug, self).__init__(pos, "kamikaze", *groups)
         self.wait_delay = 500 #mseg
         self.value = 15
 
@@ -247,11 +276,36 @@ class ChasingBug(Bug):
         super(Bug, self).update(dt, now, walls)
         if self.collide:
             self.change_direction(now)
+
+class ErrorBlock(Bug):
+    """docstring for ErrorBlock"""
+    def __init__(self, pos, *groups):
+        super(ErrorBlock, self).__init__(pos, "Error", *groups)
+
+class Virus(Bug):
+    """docstring for Virus"""
+    def __init__(self, pos, *groups):
+        super(Virus, self).__init__(pos, "virus", *groups)
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for direct in enumerate(util.DIRECTIONS):
+            self.idelframes[direct] = frames[0][0]
+            frame_dict[direct] = itertools.cycle(frames[0])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 2, 1)
+        return all_frames
+        
+        
         
 class Trojan(Actor):
     def __init__(self, pos, *groups):
-        super(Trojan, self).__init__(pos, *groups)
-        self.image.fill((200,200,200))
+        size = (32,64)
+        image = "trojan"
+        super(Trojan, self).__init__(pos, image, size, *groups)
         self.wait_range = (500, 800)
         self.wait_delay = random.randint(*self.wait_range)
         self.wait_time = 0.0
@@ -262,6 +316,18 @@ class Trojan(Actor):
         self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
         self.value = 50
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for i,direct in enumerate(util.reverse_dirs):
+            self.idelframes[direct] = frames[i][0]
+            frame_dict[direct] = itertools.cycle(frames[i])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 4, 4)
+        return all_frames
 
     def update(self, dt, now, walls, player):
         """
@@ -309,7 +375,7 @@ class Trojan(Actor):
         if self.collide:            
             self.pop_direction(self.direction)
             new_direction = random.choice(util.DIRECTIONS)            
-            self.add_direction()
+            self.add_direction(new_direction)
             self.wait_time = now
 
     def reach_goal(self):
@@ -321,11 +387,12 @@ class Trojan(Actor):
 class Fragment(pg.sprite.Sprite):
     """Explosions fragments"""
     def __init__(self, pos, layer = 9, *groups):
+        super(Fragment, self).__init__(*groups)
+        self.add(util.gfx_group)
+
         self.pos = [0.0,0.0]
         self.pos[0] = pos[0]
         self.pos[1] = pos[1]
-        super(Fragment, self).__init__(*groups)
-        self.add(util.gfx_group)
         self._layer = layer
         self.max_speed = 50
         self.dx = random.randint(-self.max_speed, self.max_speed)
