@@ -13,7 +13,7 @@ class Level(object):
         self.background = pg.Surface(self.image.get_size())
         self.background = self.background.convert()
         self.background.fill((0,0,0))
-        self.max_enemies = 12
+        self.max_enemies = 18
         self.all_sprites = pg.sprite.LayeredUpdates()
         self.actions = pg.sprite.Group()
         self.walls = self.make_walls()
@@ -43,7 +43,7 @@ class Level(object):
         while len(enemies) < self.max_enemies:
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
-            bug = actors.Virus((x, y), None)
+            bug = actors.Bug((x, y), None)
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
         x = random.randint(0, self.rect.w)
