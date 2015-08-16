@@ -169,6 +169,7 @@ class Player(Actor):
 
     def update(self, dt, now, keys, enemies, walls):
         super(Player, self).update(dt, now, walls)
+        self._layer = self.rect.bottom
         # Shooting
         for key in util.ATTACK_KEYS:
             if keys[key]:
@@ -196,7 +197,7 @@ class Bug(Actor):
         size = (32,32)
         if not image: image = "bug"
         super(Bug, self).__init__(pos, image, size, *groups)
-        self.wait_range = (500, 2000)
+        self.wait_range = (1500, 5000)
         self.wait_delay = random.randint(*self.wait_range)
         self.wait_time = 0.0
         self.change_direction()

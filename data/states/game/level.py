@@ -15,7 +15,7 @@ class Level(object):
         self.visible_sprites = pg.sprite.LayeredUpdates()
         self.player_singleton = pg.sprite.GroupSingle()
 
-        self.world_map = load_pygame(util.MAPS['2'])
+        self.world_map = load_pygame(util.MAPS['3'])
         w = self.world_map.width*util.WALL_SIZE
         h = self.world_map.height*util.WALL_SIZE
         self.image = pg.Surface((w,h))
@@ -23,8 +23,8 @@ class Level(object):
         player.add(self.player_singleton, self.all_sprites)
         self.enemies = self.make_enemies()
         self.make_level()
-        self.viewport = util.SCREEN_RECT.copy()
-        self.update_viewport()
+        self.viewport = Viewport()
+        self.viewport.update(self.player_singleton.sprite, self.rect)
 
 
     def make_level(self):
@@ -32,7 +32,7 @@ class Level(object):
         collision = self.world_map.layers[1]
         infecteds = self.world_map.layers[2]
         for x, y, image in layer.tiles():
-                tile = pg.sprite.Sprite(self.map_sprites)
+                tile = pg.sprite.Sprite(self.map_sprites, self.all_sprites)
                 tile.image = image
                 tile.rect = pg.Rect(x*64, y*64, 64,64)
         for x, y, image in collision.tiles():
@@ -59,7 +59,7 @@ class Level(object):
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
             bug = actors.ChasingBug((x, y), None)
-            if pg.sprite.spritecollideany(bug, self.map_sprites):
+            if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
         return enemies
 
@@ -69,19 +69,19 @@ class Level(object):
         self.enemies.update(dt, now, self.walls, player)
         self.actions.update(dt, now, player, keys)
         util.gfx_group.update(dt)
-        self.update_viewport()
+        self.viewport.update(self.player_singleton.sprite, self.rect)
         
-        for sprite in self.all_sprites:
-            layer = self.all_sprites.get_layer_of_sprite(sprite)
-            if layer != sprite.rect.bottom:
-                self.all_sprites.change_layer(sprite, sprite.rect.bottom)
+
+        visible_sprites = pg.sprite.spritecollide(self.viewport, self.all_sprites, False)
+        self.visible_sprites.add(visible_sprites)
+        for sprite in self.visible_sprites.sprites():
+            if not sprite in self.map_sprites:
+                self.visible_sprites.change_layer(sprite, sprite.rect.bottom)                
+            if sprite not in visible_sprites:
+                self.visible_sprites.remove(sprite)
 
         # Remove bullets when collides with walls
-        pg.sprite.groupcollide(self.walls, util.bullets_group, False, True)
-
-    def update_viewport(self):
-        self.viewport.center = self.player_singleton.sprite.rect.center
-        self.viewport.clamp_ip(self.rect)
+        pg.sprite.groupcollide(self.walls, util.bullets_group, False, True)    
 
     def is_clear(self):
         if not self.actions:
@@ -90,12 +90,19 @@ class Level(object):
 
     def render(self, surface):
         self.image.fill((0,0,0))
-        self.map_sprites.draw(self.image)
-        self.all_sprites.draw(self.image)
+        self.visible_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
 
+class Viewport(object):
+    """docstring for viewport"""
+    def __init__(self):
+        self.rect = util.SCREEN_RECT.copy()
 
+    def update(self, player, screen_rect):
+        self.rect.center = player.rect.center
+        self.rect.clamp_ip(screen_rect)
+        
 
 class Wall(pg.sprite.Sprite):
     """docstring for Wall"""
@@ -104,6 +111,7 @@ class Wall(pg.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
+        self._layer = self.rect.bottom
         self.dirty = 1
 
 class InfectedWall(pg.sprite.Sprite):
@@ -116,6 +124,7 @@ class InfectedWall(pg.sprite.Sprite):
         self.action = action 
         self.add(self.action)
         self.rect = self.image.get_rect(topleft=pos)
+        self.rect.h += 1 # to draw order
         self.big_rect = self.rect.copy()
         self.big_rect.inflate_ip(15,10)
         self.big_rect.center = self.rect.center
