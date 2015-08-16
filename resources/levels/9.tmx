@@ -21,17 +21,22 @@
  </tileset>
  <layer name="Capa de Patrones 1" width="32" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYBh4wD5AeDDajytcSBUnRe9gsp+W4TwU7CeklljxoWr/QIf/QNtPSC2x4kPV/oEO/5FuPyG1xIoPVfvpiQeL/QMJAAATDGQ=
+   eJxjYBh8gJ1OeCjZj0ueGHcT0osuNpD20zqcB7v9hNQSKz5U7R/o8B9o+wmpJVZ8qNo/0OE/0u0npJZY8aFqPz3xYLF/IAEAFmUMMw==
   </data>
  </layer>
  <layer name="Capa de patrones 3" width="32" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYBogzALErAwDB3gGof2CQCwExMIUihOjBpv9okAsBsTiFIojA0koLUWE/bQAQ8l+WsQ/KfaPxv/A2j8a/9QHo/YTb/9wTH+41AzG+p/e9vMCMR8Qc9EZ8wOxABADAHHlC4Y=
+   eJxjYEAFjEDMRCfMwoAJOLGI0QrwDCH7BYFYCIiFiRQnRg3Iflh8i0GxOA4zRHHI4xJHBpJQWgqL/ax49FELDCX7SY1nYuKfFPtJjefR+Keu/aPxT30waj/x9g/H9IdLDb3CHxcYDPbzAjEfEHPRGfMDsQAQAwCmFwtT
   </data>
  </layer>
  <layer name="Capa de patrones 2" width="32" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFowAVMFNJfBQMTTAa/yMbjMb/KBhIQIv0N5pGBycAAMqYACg=
+   eJxjYBgFo4A4wEyi+CgYmoDUeB6N/+EFRuN/FAwkoEX6G02jgxMAALFUACU=
+  </data>
+ </layer>
+ <layer name="Capa de patrones 4" width="32" height="21">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF9AYyA+2AUTAKRsEoGAWjYBSMggEEAAffAB0=
   </data>
  </layer>
 </map>

@@ -308,6 +308,10 @@ class ErrorBlock(Bug):
         self.speed = 150
         self.max_damage = 500
 
+    def kill(self):
+        PickUp(self.rect.center)
+        super(ErrorBlock, self).kill()
+
     def make_frame_dict(self, frames):
         frame_dict = {}
         for direct in util.DIRECTIONS:
@@ -324,11 +328,12 @@ class Virus(Bug):
     """docstring for Virus"""
     def __init__(self, pos, image,*groups):
         super(Virus, self).__init__(pos, "virus", *groups)
-        self.hp = 300
+        self.hp = 200
         self.is_explosive = None
         self.bullets = pg.sprite.Group()
         self.bullet_color = (51, 51, 255)
         self.cooldowntime = 0.5
+        self.value = 100
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -341,6 +346,10 @@ class Virus(Bug):
         sheet = util.GFX[spritesheet]
         all_frames = util.split_sheet(sheet, self.size, 2, 1)
         return all_frames
+
+    def kill(self):
+        PickUp(self.rect.center)
+        super(Virus, self).kill()
 
     def update(self, dt, now, walls, player, *args):
         """
@@ -388,10 +397,10 @@ class Trojan(Actor):
         self.goal_x = 0
         self.goal_y = 0        
         self.next_direction = None
-        self.hp = 250
+        self.hp = 400
         self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
-        self.value = 50
+        self.value = 250
         self.bullet_color = (200, 200, 200)
 
     def make_frame_dict(self, frames):
@@ -405,6 +414,10 @@ class Trojan(Actor):
         sheet = util.GFX[spritesheet]
         all_frames = util.split_sheet(sheet, self.size, 4, 4)
         return all_frames
+
+    def kill(self):
+        PickUp(self.rect.center)
+        super(Trojan, self).kill()
 
     def update(self, dt, now, walls, player):
         """
@@ -533,7 +546,7 @@ class PickUp(pg.sprite.Sprite):
         self.image = pg.Surface((20,20))
         self.image.fill((255,50,50))
         self.rect = self.image.get_rect(center=pos)
-        self.value = random.randint(10,25)
+        self.value = random.randint(10,50)
 
     def update(self, player):
         if self.rect.colliderect(player.rect):
