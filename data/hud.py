@@ -18,22 +18,33 @@ class HUD(object):
         self.score = Score((self.rect.right - 16, 16))
         self.message = None
         self.message_rect = None
+        self.infecteds = None
 
-    def update(self, player):
+    def update(self, player, level):
         self.life.update(player)
         self.score.update(player)
+        self.make_label(level)
 
     def set_message(self, msg, des=None):
         self.message = BiG_FONT.render(msg, False, WHITE, BLACK)
         self.message_rect = self.message.get_rect()
         self.message_rect.center = self.rect.center
 
+    def make_label(self, level):
+        if self.infecteds != len(level.actions):
+            self.infecteds = len(level.actions)
+            self.info = FONT.render("infected data: %d" % (self.infecteds), False, WHITE)
+            pos = (self.rect.right-16, self.score.rect.bottom + 16)
+            self.info_rect = self.info.get_rect(topright=pos)
+
     def render(self, surface):
         self.life.render(surface)
         self.score.render(surface)
         if self.message:
             self.image.blit(self.message, self.message_rect)
-            surface.blit(self.image, self.rect)
+        if self.infecteds:
+            surface.blit(self.info, self.info_rect)
+        surface.blit(self.image, self.rect)
         
 
 class LifeStatus(object):
@@ -76,7 +87,7 @@ class Score(object):
 
     def render(self, surface):
         surface.blit(self.image, self.rect)
-        
+
 
 class Tooltip(pg.sprite.Sprite):
     def __init__(self, text, (x, y)):

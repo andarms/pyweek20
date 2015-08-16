@@ -3,6 +3,9 @@
  <properties>
   <property name="bugs" value="20"/>
   <property name="chasing" value="1"/>
+  <property name="error" value="0"/>
+  <property name="trojan" value="0"/>
+  <property name="virus" value="0"/>
  </properties>
  <tileset firstgid="1" name="tile-green" tilewidth="64" tileheight="64">
   <image source="../tile-green.png" width="256" height="448"/>

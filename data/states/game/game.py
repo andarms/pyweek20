@@ -30,7 +30,7 @@ class GameState(state._State):
 
     def update(self, dt, current_time, keys):
         if self.player.hp > 0:
-            self.hud.update(self.player)
+            self.hud.update(self.player, self.level)
             if self.level.is_clear():
                 self.next = "MissionComplete"
                 self.hud.set_message("Level clear")

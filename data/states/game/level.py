@@ -42,8 +42,7 @@ class Level(object):
         for x, y, image in  infecteds.tiles():
             normal_image = self.world_map.get_tile_image(x, y, 1)
             iwall = InfectedWall((x*64,y*64), image, normal_image, self.actions)
-            iwall.add(self.all_sprites, self.walls)
-        
+            iwall.add(self.all_sprites, self.walls)  
         
 
 
