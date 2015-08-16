@@ -24,7 +24,7 @@ class Level(object):
         
         self.enemies = self.make_enemies()
         self.make_level()
-        self.viewport = util.SCREEN_RECT.copy()        
+        self.viewport = util.SCREEN_RECT.copy()
 
 
     def make_level(self):
@@ -38,8 +38,8 @@ class Level(object):
             if infecteds.data[x][y]:
                 true_image = self.world_map.get_tile_image(y, x, 0)
                 normal_image = self.world_map.get_tile_image(y, x, 2)
-                iwall = InfectedWall((y*64,x*64), normal_image, true_image)
-                iwall.add(self.all_sprites, self.actions, self.walls)
+                iwall = InfectedWall((y*64,x*64), normal_image, true_image, self.actions)
+                iwall.add(self.all_sprites, self.walls)
             tile = pg.sprite.Sprite(self.map_sprites)
             tile.image = image
             tile.rect = pg.Rect(x*64, y*64, 64,64)
@@ -49,15 +49,20 @@ class Level(object):
 
     def make_enemies(self):
         enemies = pg.sprite.Group()
-        while len(enemies) < self.max_enemies:
+        bugs = int (self.world_map.properties["bugs"])
+        chasing = int (self.world_map.properties["chasing"])
+        for _ in xrange(bugs):
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
             bug = actors.Bug((x, y), None)
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
-        x = random.randint(0, self.rect.w)
-        y = random.randint(0, self.rect.h)
-        actors.Trojan((x, y), enemies, self.all_sprites)
+        for _ in xrange(chasing):
+            x = random.randint(0, self.rect.w)
+            y = random.randint(0, self.rect.h)
+            bug = actors.ChasingBug((x, y), None)
+            if not pg.sprite.spritecollideany(bug, self.walls):
+                bug.add(enemies, self.all_sprites)
         return enemies
 
     def update(self, dt, now, keys):
@@ -73,7 +78,7 @@ class Level(object):
             if layer != sprite.rect.bottom:
                 self.all_sprites.change_layer(sprite, sprite.rect.bottom)
 
-        for sprite in self.all_sprites:
+        for sprite in self.map_sprites:
             if self.viewport.colliderect(sprite.rect):
                 self.visible_sprites.add(sprite)
 
@@ -85,13 +90,13 @@ class Level(object):
         self.viewport.clamp_ip(self.rect)
 
     def is_clear(self):
-        # if not self.actions:
-        #     return True
+        if not self.actions:
+            return True
         return False
 
     def render(self, surface):
         self.image.fill((0,100,10))
-        self.map_sprites.draw(self.image)
+        self.visible_sprites.draw(self.image)
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
@@ -109,10 +114,13 @@ class Wall(pg.sprite.Sprite):
 
 class InfectedWall(pg.sprite.Sprite):
     """docstring for Wall"""
-    def __init__(self, pos, image, normal_image, *gorups):
+    def __init__(self, pos, image, normal_image, action, *gorups):
         super(InfectedWall, self).__init__(*gorups)
         self.image = image
         self.normal_image = normal_image
+        # group to manage the aumont of infected walls
+        self.action = action 
+        self.add(self.action)
         self.rect = self.image.get_rect(topleft=pos)
         self.big_rect = self.rect.copy()
         self.big_rect.inflate_ip(15,10)
@@ -124,31 +132,34 @@ class InfectedWall(pg.sprite.Sprite):
         self.dirty = 1
         self.time = 0.0
         self.delay = 50
+        self.infected = True
 
     def kill(self):
-        super(InfectedWall, self).kill()
         self.tooltip.kill()
         self.image = self.normal_image
+        self.infected = False
+        self.remove(self.action)      
         return False
 
     def update(self, dt, now, player, keys):
-        if self.death == 100:
-            player.dirty = 1
-            player.score += random.randint(20,50)
-            hud.SuccessLabel(self.big_rect.topleft, "Deleted")
-            return self.kill()
-        else:
-            if self.big_rect.colliderect(player.rect):
-                self.tooltip.add(util.gfx_group)
-                if keys[pg.K_e]:
-                    self.deleting = True
+        if self.infected:
+            if self.death == 100:
+                player.dirty = 1
+                player.score += random.randint(20,50)
+                hud.SuccessLabel(self.big_rect.topleft, "Deleted")
+                return self.kill()
             else:
-                self.tooltip.remove(util.gfx_group)
-                self.deleting = False
-                self.death = 0      
-                self.tooltip.change_text(self.help_text)
-            if now-self.time > self.delay:
-                if self.deleting:
-                    self.tooltip.change_text("Deleting %d" % (self.death))
-                    self.death += 1
-                self.time = now
+                if self.big_rect.colliderect(player.rect):
+                    self.tooltip.add(util.gfx_group)
+                    if keys[pg.K_e]:
+                        self.deleting = True
+                else:
+                    self.tooltip.remove(util.gfx_group)
+                    self.deleting = False
+                    self.death = 0      
+                    self.tooltip.change_text(self.help_text)
+                if now-self.time > self.delay:
+                    if self.deleting:
+                        self.tooltip.change_text("Deleting %d" % (self.death))
+                        self.death += 1
+                    self.time = now
