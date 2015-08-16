@@ -32,7 +32,6 @@ class Level(object):
         layer = self.world_map.layers[0]
         collision = self.world_map.layers[1]
         infecteds = self.world_map.layers[2]
-        player_pos = self.world_map.layers[3]
         for x, y, image in layer.tiles():
                 tile = pg.sprite.Sprite(self.map_sprites, self.all_sprites)
                 tile.image = image
