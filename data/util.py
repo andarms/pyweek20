@@ -104,6 +104,7 @@ SCREEN_RECT = SCREEN.get_rect()
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 gfx_group = pg.sprite.Group()
 bullets_group = pg.sprite.Group()
+pickups_group = pg.sprite.Group()
 
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))

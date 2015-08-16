@@ -30,9 +30,7 @@ class MainMenuState(MenuState):
         super(MainMenuState, self).__init__()
         self.options = [
             {"text":"PLAY", "nested": False, "activate": self.play},
-            {"text":"HIGHSCORES", "nested": False, "activate": self.play},
-            {"text":"HOW TO PLAY", "nested": False, "activate": self.play},
-            {"text":"CREDITS", "nested": False, "activate": self.play},
+            {"text":"CREDITS", "nested": False, "activate": self.credits},
             {"text":"QUIT", "nested": False, "activate": self.exit}
         ]
         self.set_options(self.options)

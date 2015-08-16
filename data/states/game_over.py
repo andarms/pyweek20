@@ -1,7 +1,8 @@
+import os
 import pygame as pg
 
 import state
-from .. import util
+from .. import util, actors
 
 FONT = pg.font.Font(util.FONTS['west-england.regular'], 70)
 SMALL_FONT = pg.font.Font(util.FONTS['west-england.regular'], 40)
@@ -36,23 +37,26 @@ class GameOverState(state._State):
 
     def clear(self):
         self.name = ""
+        self.data["player"] = actors.Player((0,0))
+        util.MAPS = util.load_all_maps(os.path.join('resources', 'levels'))
 
     def make_title_surface(self):
         return FONT.render(self.title, False, self.text_color)
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
-            if event.key >= 65 and event.key <= 122:
-                self.name += chr(event.key)
-            if event.key == pg.K_BACKSPACE:
-                self.name = self.name[:-1]
+            # i can make the highscore :'(
+            # if event.key >= 65 and event.key <= 122:
+            #     self.name += chr(event.key)
+            # if event.key == pg.K_BACKSPACE:
+            #     self.name = self.name[:-1]
             if event.key == pg.K_RETURN:
                 self.done = True
 
-    def update(self, *args):
-        if self.name != self.old_name:
-            self.update_name()
-            self.old_name = self.name
+    # def update(self, *args):
+    #     if self.name != self.old_name:
+    #         self.update_name()
+    #         self.old_name = self.name
 
     def update_name(self):
         if len(self.name) <= 7:
@@ -64,5 +68,5 @@ class GameOverState(state._State):
     def render(self, surface):
         self.image.fill(self.bg_color)
         self.image.blit(self.titleSurface, self.rect)
-        self.sprites.draw(self.image)
+        # self.sprites.draw(self.image)
         surface.blit(self.image, (0,0))

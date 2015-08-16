@@ -124,6 +124,9 @@ class Actor(pg.sprite.Sprite):
             Fragment(self.rect.center)
         if not exploded:
             hud.KillLabel(self.rect.topleft, self.value)
+            rand = random.random()
+            if rand > .66 and rand < 0.77:
+                PickUp(self.rect.center)
         del self
 
 class Player(Actor):
@@ -179,10 +182,10 @@ class Player(Actor):
         if enes:
             for e in enes:
                 if e.is_explosive:
-                    damage = random.randint(5,10)
+                    damage = random.randint(5, e.max_damage)
                     self.take_damage(damage)
                     hud.DamageLabel(self.rect.topleft, damage)
-                    e.kill(True)
+                    e.kill(True)        
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
@@ -190,6 +193,8 @@ class Player(Actor):
             value = bug.take_damage(damage)
             if value:
                 self.score += value
+        
+        util.pickups_group.update(self)
 
 class Bug(Actor):
     """docstring for Bug"""
@@ -204,6 +209,7 @@ class Bug(Actor):
         self.value = 10
         self.is_explosive = True
         self.animate_fps = 5.0
+        self.max_damage = 25
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -282,7 +288,24 @@ class ChasingBug(Bug):
 class ErrorBlock(Bug):
     """docstring for ErrorBlock"""
     def __init__(self, pos, *groups):
-        super(ErrorBlock, self).__init__(pos, "Error", *groups)
+        super(ErrorBlock, self).__init__(pos, "error", *groups)
+        self.hp = 1000
+        self.value = 1000
+        self.wait_delay = 10000
+        self.speed = 150
+        self.max_damage = 500
+
+    def make_frame_dict(self, frames):
+        frame_dict = {}
+        for direct in util.DIRECTIONS:
+            self.idelframes[direct] = frames[0][0]
+            frame_dict[direct] = itertools.cycle(frames[0])
+        return frame_dict
+
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 6, 1)
+        return all_frames
 
 class Virus(Bug):
     """docstring for Virus"""
@@ -301,7 +324,12 @@ class Virus(Bug):
             frame_dict[direct] = itertools.cycle(frames[0])
         return frame_dict
 
-    def update(self, dt, now, walls, player):
+    def get_frames(self, spritesheet):
+        sheet = util.GFX[spritesheet]
+        all_frames = util.split_sheet(sheet, self.size, 2, 1)
+        return all_frames
+
+    def update(self, dt, now, walls, player, *args):
         """
         Simple chasing, random choose to follow the player
         vertical or horizontal.
@@ -333,13 +361,6 @@ class Virus(Bug):
         super(Bug, self).update(dt, now, walls)
         if self.collide:
             self.change_direction(now)
-
-
-
-    def get_frames(self, spritesheet):
-        sheet = util.GFX[spritesheet]
-        all_frames = util.split_sheet(sheet, self.size, 2, 1)
-        return all_frames
         
         
         
@@ -358,7 +379,7 @@ class Trojan(Actor):
         self.cooldowntime = 0.5
         self.bullets = pg.sprite.Group()
         self.value = 50
-        self.bullet_color = (100, 100, 100)
+        self.bullet_color = (200, 200, 200)
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -488,3 +509,23 @@ class Bullet(pg.sprite.Sprite):
             self.kill() 
         self.rect.centerx += self.dx * dt
         self.rect.centery += self.dy * dt
+
+
+
+class PickUp(pg.sprite.Sprite):
+    """docstring for PickUp"""
+    def __init__(self, pos):
+        super(PickUp, self).__init__()
+        self.add(util.pickups_group)
+        self.image = pg.Surface((20,20))
+        self.image.fill((255,50,50))
+        self.rect = self.image.get_rect(center=pos)
+        self.value = random.randint(10,25)
+
+    def update(self, player):
+        if self.rect.colliderect(player.rect):
+            player.hp += self.value
+            hud.SuccessLabel(self.rect.center, "+ %d" % (self.value))
+            self.kill()
+
+        

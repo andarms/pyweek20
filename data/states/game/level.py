@@ -42,34 +42,51 @@ class Level(object):
         for x, y, image in  infecteds.tiles():
             normal_image = self.world_map.get_tile_image(x, y, 1)
             iwall = InfectedWall((x*64,y*64), image, normal_image, self.actions)
-            iwall.add(self.all_sprites, self.walls)  
+            iwall.add(self.all_sprites, self.walls)
         
 
 
 
     def make_enemies(self):
+        tiles = self.map_sprites.sprites()
         enemies = pg.sprite.Group()
         bugs = int (self.world_map.properties["bugs"])
         chasing = int (self.world_map.properties["chasing"])
+        trojans = int (self.world_map.properties["trojan"])
+        viruses = int (self.world_map.properties["virus"])
+        errors = int (self.world_map.properties["error"])
         for _ in xrange(bugs):
-            tile = random.choice(self.map_sprites.sprites())
+            tile = random.choice(tiles)
             pos = tile.rect.topleft
             bug = actors.Bug(pos, None)
-            if not pg.sprite.spritecollideany(bug, self.walls):
-                bug.add(enemies, self.all_sprites)
+            bug.add(enemies, self.all_sprites)
         for _ in xrange(chasing):
-            tile = random.choice(self.map_sprites.sprites())
+            tile = random.choice(tiles)
             pos = tile.rect.topleft
             bug = actors.ChasingBug(pos, None)
-            if not pg.sprite.spritecollideany(bug, self.walls):
-                bug.add(enemies, self.all_sprites)
+            bug.add(enemies, self.all_sprites)
+        for _ in xrange(trojans):
+            tile = random.choice(tiles)
+            pos = tile.rect.topleft
+            bug = actors.Trojan(pos)
+            bug.add(enemies, self.all_sprites)
+        for _ in xrange(viruses):
+            tile = random.choice(tiles)
+            pos = tile.rect.topleft
+            bug = actors.Virus(pos, None)
+            bug.add(self.all_sprites, enemies)
+        for _ in xrange(errors):
+            tile = random.choice(tiles)
+            pos = tile.rect.topleft
+            bug = actors.ErrorBlock(pos)
+            bug.add(enemies, self.all_sprites)
         return enemies
 
     def update(self, dt, now, keys):
         self.player_singleton.update(dt, now, keys, self.enemies, self.walls)
         player = self.player_singleton.sprite
         self.enemies.update(dt, now, self.walls, player)
-        self.actions.update(dt, now, player, keys)
+        self.actions.update(dt, now, self.walls, player, keys)
         util.gfx_group.update(dt)
         self.viewport.update(self.player_singleton.sprite, self.rect)
         
@@ -94,6 +111,7 @@ class Level(object):
         self.image.fill((0,0,0))
         self.visible_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
+        util.pickups_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
 
 class Viewport(object):
@@ -146,7 +164,7 @@ class InfectedWall(pg.sprite.Sprite):
         self.remove(self.action)      
         return False
 
-    def update(self, dt, now, player, keys):
+    def update(self, dt, now, walls, player, keys):
         if self.infected:
             if self.death == 100:
                 player.dirty = 1
