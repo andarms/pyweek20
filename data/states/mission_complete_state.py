@@ -10,7 +10,7 @@ class MissionCompleteState(state._State):
         self.text_color = (255,255,255)
         self.duration = 3 #seg
         self.image = pg.Surface(util.SCREEN_SIZE)
-        self.next = "Splash"
+        self.next = "Game"
         self.title = "Mission Complete"
         self.titleSurface = self.make_title_surface()
         self.rect = self.titleSurface.get_rect()
@@ -23,6 +23,8 @@ class MissionCompleteState(state._State):
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_RETURN:
+                if len(util.MAPS) == 0:
+                    self.next = "Win"
                 self.done = True
 
     def render(self, surface):

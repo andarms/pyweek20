@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="26" tilewidth="64" tileheight="64" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="26" tilewidth="64" tileheight="64" nextobjectid="4">
  <properties>
   <property name="bugs" value="20"/>
   <property name="chasing" value="1"/>
@@ -17,7 +17,7 @@
    eJzllW8LQDAQh49Q5P9CfP8P6pZEa3a2m9B+9byh9di57gB4iZAYySxImE6ZxeFM+aLXpU7nerl6U4dze+YPeDukJxAPeAfYaj8amB7w2iREb44UCsJ0yJNXl7s1oLyyx3V34HplD0+G91ffxfVS+Yu3Qmqg545v774rqLnj2xva//2C985+u+o3jlfOBtNuO+8+td/+WOcQvLrdaEuDtHDMPvX5Cjk3DMg=
   </data>
  </layer>
- <layer name="infecteds" width="30" height="26" visible="0">
+ <layer name="infecteds" width="30" height="26">
   <data encoding="base64" compression="zlib">
    eJxjYBgFgwEwD7QDRgEGGI2TUTAKRgEMcA+0A0bBKKATGK37RgE2AACE2AAV
   </data>

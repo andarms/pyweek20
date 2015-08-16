@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="64" nextobjectid="3">
+ <properties>
+  <property name="bugs" value="20"/>
+  <property name="chasing" value="10"/>
+  <property name="trojan" value="1"/>
+ </properties>
+ <tileset firstgid="1" name="tile-green" tilewidth="64" tileheight="64">
+  <image source="../tile-green.png" width="256" height="448"/>
+ </tileset>
+ <layer name="images" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt0ssRwCAIBFBv6b/jNKDy0VWEZYZLBOVlaI0RLb6DSYfPIZ17a71mTV1mR4SkA/se2mGJ2w7p24rDOpP2bmnmlx3IvUJlVcfJ2eiQv934h5razI4se1XN0evV3kfH/b1CGuno967OirRmd0Sb8VWHJhAO1L+lI0bSse9+6T5rjaZ+5Bj10rFnr6wO5F7RgXGszFnFsWI//d7uN6s6NHHDW9URNSs42uQcGZ5dm/Vq+hCx2/FSZnNkiB9uby/+
+  </data>
+ </layer>
+ <layer name="collisions" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztmotqwzAMRdOxjq7rHu3YRvv/HzoHEghDlnQVSXPdXhAh1Ng+suQoToehD22KPRR7SrLHII7noH5r2gX1m83xNeBrN8fMN9OuxnEsdir2qZgb0hbRYbpKvt4xbUa/jfw/ivGQtojO0/UitOM4WtCdw6ao/EA4Xou9TfOQrDbPzPygfIbu5ZJfOM3jIz6iOCifZXLM49eMWkskrhCt4bAI4UDqK+/4l4RwbIPnskY9c9T2K28Oz7oM2a+8OTzrsp7jilLPHFTMRtVPktZwUDEbVT9JyoyryLXK5IhcK23fWfkRnV9Z+RGdX63nh1Yt5sfol/3CTn/uKX+1+Bw8C79Te9edI049cyzfWak8RDik8w7pbGjZB9eG4vCqE2v9U+LG1OxtXhy1sTw4NPLiQPqndC0cy28q2vM0RFkc0Wdx1PcqS73L9f8f71IaZT8/omrKbI6oNUU5LGf/FqHrhnJYzv4tQtetxfrKolvg4GJUWzOiZq0xOQ4uRqU8sRqXD9x8biGurknj/1Dm7+f7IHsZ+POPtfZe7KPYL9SiH9o=
+  </data>
+ </layer>
+ <layer name="infceteds" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt18kJADAIBEAhz/Tfb1rII6LBmQoWwSsCZlvVAQAAINylwExm31y7OsAH1Ahq6D2gOzc0ANlud42dxAtZP9gBb1EAPw==
+  </data>
+ </layer>
+</map>

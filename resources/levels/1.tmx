@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="64" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="13" height="16" tilewidth="64" tileheight="64" nextobjectid="5">
  <properties>
-  <property name="bugs" value="20"/>
-  <property name="chasing" value="3"/>
+  <property name="bugs" value="17"/>
+  <property name="chasing" value="0"/>
+  <property name="error" value="0"/>
+  <property name="tojan" value="0"/>
+  <property name="virus" value="0"/>
  </properties>
  <tileset firstgid="1" name="tile-green" tilewidth="64" tileheight="64">
   <image source="../tile-green.png" width="256" height="448"/>
  </tileset>
- <layer name="images" width="50" height="50">
+ <layer name="images" width="13" height="16">
   <data encoding="base64" compression="zlib">
-   eJztmuFuwjAMhMM0mEDANtCY4P0flFQoEppsx/HsI4RWun9R288+J27SlMa4FllvWSuFTg56D+JYZn0AtR2E4yfp8jZ5pOSueEbKMcfxnXXIOirerWWsJXcXxTiOo8TttyHGmrFojh40c9jUQ33ssvZZnwpx74msDypmrXN5LS6anHGiYkRxUDFDctTWDSqXLb5CcUTXR22trMWsF441+N1mjpu4+cqbw7Mva5mvvDmm56yST182sq9ejYPybFT/FMlBeTaqf+rJV5G5QnJE5ko796HqI7q+UPURXV+91weSwzvW1u+t3tbBc5Ivau6aOWYOC8f9Nyv3Ha/lqNWfVId/7yGNoTi8+kRNvjXP1MxtXhzcszw4rL7y7K9G46jtE/13PURxRO/FUfuOln5Xur92/wAt9PoReb6A5Ig8X2jhsPSiiLy1clj2/hF567G/Qvjq0eL8JnFIHtX2jK2q1QPnN4lD8qjm3wrtfzX346z19Wy+egWOcn6+eVJN5/pfWVeoy1Kq
+   eJxjYKAeYMeBCcmPRD34ADX1kOKWoaqHmvFDKgAAo5MDeg==
   </data>
  </layer>
- <layer name="collisions" width="50" height="50">
+ <layer name="collisions" width="13" height="16">
   <data encoding="base64" compression="zlib">
-   eJztmEkOgzAMRXMIFix6eB+1QlWlNI1H+CEYvmRFosb2K84ApeTQWgqtn3GYoThAobl8qLgECs3l8xh9a1zl+4njWCrT5PH1qObQ/LJzzKCHI6ZZ+spqLybOSI5eLu+z2PPsFoNx+TJyHFHXCXsmWfJWvX/q2Uiqrx4lv2fdxcszz4/m8PSgtl6fzVGPkiIcnN/V+orzy8rR6+96bR4pAEf6/QN1RtyUiONnFPx6fUXt9d41j5CsmzJzeIWu0aIZOXrna+3MPeM+aJjTvWsPB0iZOdp3VuZ3ssbf++5rWRO4OpXa/ji4XNazlZQzC4fxfndMb18Z/UzxPHkQHO2c88wPT562TuWeCAdUkf8mul7NptH7B/K7/B05It/MI/LGuyvHrLoaB7dmShzK+RJms3FE/SK6Wl9xysYx0lB531KLteU=
+   eJxjYMAEjEDMhAOzIMmzIWFxLObAAAcQc+KRH4l6BIFYCAsWxqNHFIjFGCDhLQbFoPiQItFtkoNYD8iPyGmJ3vHDRSTmB2IBIAYAj1gDbQ==
   </data>
  </layer>
- <layer name="infceteds" width="50" height="50">
+ <layer name="infecteds" width="13" height="16">
   <data encoding="base64" compression="zlib">
-   eJzt2LEJADAIBEAhZfbf1wkCKSIGvJvgK/8xAmZb3QEAACDsUmAmtw/OdncAAOBLNjQA1W67RifxQtX/IwELegAp
+   eJxjYBgFQw0wD7QDRgDgJlIcAApMABo=
   </data>
  </layer>
 </map>

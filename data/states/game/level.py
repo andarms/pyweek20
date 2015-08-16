@@ -15,7 +15,7 @@ class Level(object):
         self.visible_sprites = pg.sprite.LayeredUpdates()
         self.player_singleton = pg.sprite.GroupSingle()
 
-        self.world_map = load_pygame(util.MAPS['3'])
+        self.world_map = load_pygame(util.MAPS.pop())
         w = self.world_map.width*util.WALL_SIZE
         h = self.world_map.height*util.WALL_SIZE
         self.image = pg.Surface((w,h))
@@ -35,12 +35,15 @@ class Level(object):
                 tile = pg.sprite.Sprite(self.map_sprites, self.all_sprites)
                 tile.image = image
                 tile.rect = pg.Rect(x*64, y*64, 64,64)
+                if random.random() > .66:
+                    self.player_singleton.sprite.rect.topleft = x*64, y*64
         for x, y, image in collision.tiles():
             Wall((x*64,y*64), image, self.walls, self.all_sprites)
         for x, y, image in  infecteds.tiles():
             normal_image = self.world_map.get_tile_image(x, y, 1)
             iwall = InfectedWall((x*64,y*64), image, normal_image, self.actions)
             iwall.add(self.all_sprites, self.walls)
+        
         
 
 

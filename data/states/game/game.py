@@ -10,11 +10,13 @@ class GameState(state._State):
         self.bg_color = (0,0,0)        
         self.hud = hud.HUD()
         self.game_over = False
+        self.player = actors.Player((0,0))
 
     def start(self, data, current_time):
         super(GameState, self).start(data, current_time)
         self.game_over = False
-        self.player = self.player = actors.Player([500,500])
+        if self.data:
+            self.player = self.data["player"]
         self.level = level.Level(self.player)
         self.hud = hud.HUD()
 

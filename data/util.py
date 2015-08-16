@@ -70,7 +70,13 @@ def load_all_fonts(directory, accept=(".ttf",)):
     return load_all_music(directory, accept)
 
 def load_all_maps(directory, accept=(".tmx",)):
-    return load_all_music(directory, accept)
+    maps = []
+    for world_map in os.listdir(directory):
+        name,ext = os.path.splitext(world_map)
+        if ext.lower() in accept:
+            maps.append(os.path.join(directory, world_map))
+    maps.reverse()
+    return maps
 
 def split_sheet(sheet, size, columns, rows):
     """

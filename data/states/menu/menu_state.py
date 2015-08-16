@@ -42,7 +42,7 @@ class MainMenuState(MenuState):
 
     def play(self):        
         self.done = True
-        self.next = "Game"
+        self.next = "Game"        
 
     def settings(self):
         self.done = True
