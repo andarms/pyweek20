@@ -9,12 +9,12 @@
  </tileset>
  <layer name="images" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztmltvwzAIhb2oy9Rq96lttv//Q+doihRNYAOFU+fycN6sJB8cbGxnSCkNK9BDVpfVC3Rx0CGI4zHrCajnlXCchXnrZrmbPFPKMcfxkfWZ9SX4Ns1YS+5+BOM4jiluV0WMJWPRHC1o57Cphfp4yXrNehOI+05kfVAx087ltbhIcsaJihHFQcUMyVFbN6hcanyF4oiuj9paWYtZKxxH8LftHH/i5itvDs++TDNfeXOM7+mTT1+2Zl9tjYPybFT/FMlBeTaqf2rJV5G5QnJE5ko696HqI7q+UPURXV+t1weSwzvW1v1Wa+vgd9LvgXaOncPCMd+zcvt4KUet/kp1+P8ZpTEUh1efKMm35J2Suc2Lg3uXB4fVV5791do4audEt66HKI7oszjq3NHS75aeLz0/QAu9fkTeLyA5Iu8XNByWXhSRNy2H5ewfkbcW+yuEr+4tzm8ljpJHpT2jVrV64PxW4ih5VPJvhfS/mvk4a30tzVdb4Jjuz08L1Xiv/571C2NzZzI=
+   eJztmuFuwjAMhMM0mEDANtCY4P0flFQoEppsx/HsI4RWun9R288+J27SlMa4FllvWSuFTg56D+JYZn0AtR2E4yfp8jZ5pOSueEbKMcfxnXXIOirerWWsJXcXxTiOo8TttyHGmrFojh40c9jUQ33ssvZZnwpx74msDypmrXN5LS6anHGiYkRxUDFDctTWDSqXLb5CcUTXR22trMWsF441+N1mjpu4+cqbw7Mva5mvvDmm56yST182sq9ejYPybFT/FMlBeTaqf+rJV5G5QnJE5ko796HqI7q+UPURXV+91weSwzvW1u+t3tbBc5Ivau6aOWYOC8f9Nyv3Ha/lqNWfVId/7yGNoTi8+kRNvjXP1MxtXhzcszw4rL7y7K9G46jtE/13PURxRO/FUfuOln5Xur92/wAt9PoReb6A5Ig8X2jhsPSiiLy1clj2/hF567G/Qvjq0eL8JnFIHtX2jK2q1QPnN4lD8qjm3wrtfzX346z19Wy+egWOcn6+eVJN5/pfWVeoy1Kq
   </data>
  </layer>
- <layer name="collisions" width="50" height="50" visible="0">
+ <layer name="collisions" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJztmF0Og0AIhD2EDx5/j9r60GSrO/yZUUQnISYWga+yKzpNYy3AsupbW0M1s4zFQQqN8rHiNlJolM9j7VfjIl/fEMfcmSaPr0c9h+ZXnSODXo6YsvSVx67mGOXy3o8j9242GMpXkQPVdRZHRIH1celsJNXXHyW/d9/li7XOjbnNPajt11dz9EdJEQ7kd7e+Qn5VOUb93e/NZ4rAUf75wZoRVxXi+DsKfqO+2s3o2tyuicm6qjKHV+waLcrIMZqvtZk743PQsKZH514OkipzbN9Zwe/NGv/ou69lT0B1KrXtOFAu62wl5azCYbzeHdPbV0Y/UzxPHgbHds151oczT29ijUEOqiL/TXS/yqaznx/M7/JP5Ih8M4/IG++pHFl1Nw60Z0ocynxJs2wcUb+I7tZXSNU4zjRW3g87zbmB
+   eJztmEkOgzAMRXMIFix6eB+1QlWlNI1H+CEYvmRFosb2K84ApeTQWgqtn3GYoThAobl8qLgECs3l8xh9a1zl+4njWCrT5PH1qObQ/LJzzKCHI6ZZ+spqLybOSI5eLu+z2PPsFoNx+TJyHFHXCXsmWfJWvX/q2Uiqrx4lv2fdxcszz4/m8PSgtl6fzVGPkiIcnN/V+orzy8rR6+96bR4pAEf6/QN1RtyUiONnFPx6fUXt9d41j5CsmzJzeIWu0aIZOXrna+3MPeM+aJjTvWsPB0iZOdp3VuZ3ssbf++5rWRO4OpXa/ji4XNazlZQzC4fxfndMb18Z/UzxPHkQHO2c88wPT562TuWeCAdUkf8mul7NptH7B/K7/B05It/MI/LGuyvHrLoaB7dmShzK+RJms3FE/SK6Wl9xysYx0lB531KLteU=
   </data>
  </layer>
  <layer name="infceteds" width="50" height="50">

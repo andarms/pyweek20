@@ -14,7 +14,7 @@ class GameState(state._State):
     def start(self, data, current_time):
         super(GameState, self).start(data, current_time)
         self.game_over = False
-        self.player = self.player = actors.Player([150,250])
+        self.player = self.player = actors.Player([500,500])
         self.level = level.Level(self.player)
         self.hud = hud.HUD()
 

@@ -14,17 +14,17 @@ class Level(object):
         self.walls = pg.sprite.Group()
         self.visible_sprites = pg.sprite.LayeredUpdates()
         self.player_singleton = pg.sprite.GroupSingle()
-        player.add(self.player_singleton, self.all_sprites)
 
-        self.world_map = load_pygame(util.MAPS['1'])
+        self.world_map = load_pygame(util.MAPS['2'])
         w = self.world_map.width*util.WALL_SIZE
         h = self.world_map.height*util.WALL_SIZE
         self.image = pg.Surface((w,h))
-        self.rect = self.image.get_rect()
-        
+        self.rect = self.image.get_rect()        
+        player.add(self.player_singleton, self.all_sprites)
         self.enemies = self.make_enemies()
         self.make_level()
         self.viewport = util.SCREEN_RECT.copy()
+        self.update_viewport()
 
 
     def make_level(self):
@@ -32,17 +32,15 @@ class Level(object):
         collision = self.world_map.layers[1]
         infecteds = self.world_map.layers[2]
         for x, y, image in layer.tiles():
-            if collision.data[x][y]:
-                true_image = self.world_map.get_tile_image(y, x, 0)
-                Wall((y*64,x*64), true_image, self.walls, self.all_sprites)
-            if infecteds.data[x][y]:
-                true_image = self.world_map.get_tile_image(y, x, 0)
-                normal_image = self.world_map.get_tile_image(y, x, 2)
-                iwall = InfectedWall((y*64,x*64), normal_image, true_image, self.actions)
-                iwall.add(self.all_sprites, self.walls)
-            tile = pg.sprite.Sprite(self.map_sprites)
-            tile.image = image
-            tile.rect = pg.Rect(x*64, y*64, 64,64)
+                tile = pg.sprite.Sprite(self.map_sprites)
+                tile.image = image
+                tile.rect = pg.Rect(x*64, y*64, 64,64)
+        for x, y, image in collision.tiles():
+            Wall((x*64,y*64), image, self.walls, self.all_sprites)
+        for x, y, image in  infecteds.tiles():
+            normal_image = self.world_map.get_tile_image(x, y, 1)
+            iwall = InfectedWall((x*64,y*64), image, normal_image, self.actions)
+            iwall.add(self.all_sprites, self.walls)
         
 
 
@@ -61,7 +59,7 @@ class Level(object):
             x = random.randint(0, self.rect.w)
             y = random.randint(0, self.rect.h)
             bug = actors.ChasingBug((x, y), None)
-            if not pg.sprite.spritecollideany(bug, self.walls):
+            if pg.sprite.spritecollideany(bug, self.map_sprites):
                 bug.add(enemies, self.all_sprites)
         return enemies
 
@@ -78,10 +76,6 @@ class Level(object):
             if layer != sprite.rect.bottom:
                 self.all_sprites.change_layer(sprite, sprite.rect.bottom)
 
-        for sprite in self.map_sprites:
-            if self.viewport.colliderect(sprite.rect):
-                self.visible_sprites.add(sprite)
-
         # Remove bullets when collides with walls
         pg.sprite.groupcollide(self.walls, util.bullets_group, False, True)
 
@@ -95,8 +89,8 @@ class Level(object):
         return False
 
     def render(self, surface):
-        self.image.fill((0,100,10))
-        self.visible_sprites.draw(self.image)
+        self.image.fill((0,0,0))
+        self.map_sprites.draw(self.image)
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
