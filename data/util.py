@@ -106,7 +106,16 @@ gfx_group = pg.sprite.Group()
 bullets_group = pg.sprite.Group()
 pickups_group = pg.sprite.Group()
 
+
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))
 GFX = load_all_gfx("resources")
 MAPS = load_all_maps(os.path.join('resources', 'levels'))
+SFX = load_all_music(os.path.join('resources', 'music'))
+
+
+music = pg.mixer.Channel(3)
+sfx = pg.mixer.Channel(4)
+bullets = pg.mixer.Channel(5)
+
+bg_song = pg.mixer.Sound(SFX["DST-ClubNight"])

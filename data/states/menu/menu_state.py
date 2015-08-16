@@ -35,6 +35,8 @@ class MainMenuState(MenuState):
         ]
         self.set_options(self.options)
 
+        util.music.play(util.bg_song, -1)        
+
     def start(self, data, start_time):
         self.set_options(self.options)
 

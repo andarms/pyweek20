@@ -32,7 +32,8 @@ class Actor(pg.sprite.Sprite):
         self.animate()
         self.rect = self.image.get_rect(topleft=pos)
         self.hit_rect = self.rect.copy()
-        self.hit_rect.midbottom = self.rect.midbottom  
+        self.hit_rect.midbottom = self.rect.midbottom
+        self.explosion_sound = pg.mixer.Sound(util.SFX["Explosion4"] )
 
     def get_frames(self, spritesheet):
         """ Must be overloaded in child objects"""
@@ -127,6 +128,7 @@ class Actor(pg.sprite.Sprite):
             rand = random.random()
             if rand > .66 and rand < 0.77:
                 PickUp(self.rect.center)
+        util.sfx.play(self.explosion_sound)
         del self
 
 class Player(Actor):
@@ -141,6 +143,7 @@ class Player(Actor):
         self.value = 0
         self.hit_rect.h = self.rect.h-22
         self.bullet_color = (51, 255, 255)
+        self.attack_sound = pg.mixer.Sound(util.SFX["Laser_Shoot11"])
 
     def make_frame_dict(self, frames):
         frame_dict = {}
@@ -176,6 +179,7 @@ class Player(Actor):
         # Shooting
         for key in util.ATTACK_KEYS:
             if keys[key]:
+                util.bullets.play(self.attack_sound)
                 self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
         # Collisions with enemies
         enes = pg.sprite.spritecollide(self, enemies, False)

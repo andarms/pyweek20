@@ -137,6 +137,8 @@ class SuccessLabel(FloatingLabel):
     def __init__(self, pos, value):
         color = (50,255,50)
         super(SuccessLabel, self).__init__(pos, value, color)
+        sound = pg.mixer.Sound(util.SFX["Powerup37"])
+        util.sfx.play(sound)
         
         
 

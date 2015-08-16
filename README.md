@@ -23,4 +23,6 @@ Othewise open a terminal / console and "cd" to the game directory and run:
 Move the hero with arrows keys, use th W,A,S,D keys to shoot.
 For actions use E key.
 
+Delete all infected data and kill enemies to get scroe
+
 Made with :heart: by @ANDarms

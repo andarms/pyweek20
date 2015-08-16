@@ -61,6 +61,7 @@ class Menu(object):
 
         self.curr_inx = 0
         self.options[self.curr_inx].toogle_select()
+        self.sound = pg.mixer.Sound(util.SFX["menu"])
 
 
     def generate_options(self, options):
@@ -76,6 +77,7 @@ class Menu(object):
 
     def handle_events(self, key):
         if key == pg.K_DOWN:
+            util.sfx.play(self.sound)
             self.options[self.curr_inx].toogle_select()
             if self.curr_inx < len(self.options) - 1:
                 self.curr_inx += 1
@@ -84,6 +86,7 @@ class Menu(object):
             self.options[self.curr_inx].toogle_select()
 
         if key == pg.K_UP:
+            util.sfx.play(self.sound)
             self.options[self.curr_inx].toogle_select()
             if self.curr_inx > 0:
                 self.curr_inx -= 1
