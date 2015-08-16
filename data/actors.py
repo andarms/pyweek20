@@ -173,13 +173,22 @@ class Player(Actor):
             direction = util.CONTROLS[key]
             super(Player, self).pop_direction(direction)
 
+    def attack(self, dt, direction, *groups):
+        if not direction:
+            direction = self.direction
+        if self.cooldown > 0:
+            self.cooldown -= dt
+        else:
+            Bullet(self.rect.center, direction, self.bullet_color,  *groups)
+            util.bullets.play(self.attack_sound)
+            self.cooldown = self.cooldowntime
+
     def update(self, dt, now, keys, enemies, walls):
         super(Player, self).update(dt, now, walls)
         self._layer = self.rect.bottom
         # Shooting
         for key in util.ATTACK_KEYS:
-            if keys[key]:
-                util.bullets.play(self.attack_sound)
+            if keys[key]:                
                 self.attack(dt, util.ATTACK_KEYS[key], self.bullets)
         # Collisions with enemies
         enes = pg.sprite.spritecollide(self, enemies, False)
@@ -193,7 +202,7 @@ class Player(Actor):
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            damage = random.randint(5,40)
+            damage = random.randint(20,70)
             value = bug.take_damage(damage)
             if value:
                 self.score += value
@@ -213,7 +222,7 @@ class Bug(Actor):
         self.value = 10
         self.is_explosive = True
         self.animate_fps = 5.0
-        self.max_damage = 25
+        self.max_damage = 15
 
     def make_frame_dict(self, frames):
         frame_dict = {}
