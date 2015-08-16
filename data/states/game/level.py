@@ -21,8 +21,8 @@ class Level(object):
         self.image = pg.Surface((w,h))
         self.rect = self.image.get_rect()        
         player.add(self.player_singleton, self.all_sprites)
-        self.enemies = self.make_enemies()
         self.make_level()
+        self.enemies = self.make_enemies()
         self.viewport = Viewport()
         self.viewport.update(self.player_singleton.sprite, self.rect)
 
@@ -52,15 +52,15 @@ class Level(object):
         bugs = int (self.world_map.properties["bugs"])
         chasing = int (self.world_map.properties["chasing"])
         for _ in xrange(bugs):
-            x = random.randint(0, self.rect.w)
-            y = random.randint(0, self.rect.h)
-            bug = actors.Bug((x, y), None)
+            tile = random.choice(self.map_sprites.sprites())
+            pos = tile.rect.topleft
+            bug = actors.Bug(pos, None)
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
         for _ in xrange(chasing):
-            x = random.randint(0, self.rect.w)
-            y = random.randint(0, self.rect.h)
-            bug = actors.ChasingBug((x, y), None)
+            tile = random.choice(self.map_sprites.sprites())
+            pos = tile.rect.topleft
+            bug = actors.ChasingBug(pos, None)
             if not pg.sprite.spritecollideany(bug, self.walls):
                 bug.add(enemies, self.all_sprites)
         return enemies
