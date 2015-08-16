@@ -287,7 +287,7 @@ class Virus(Bug):
     """docstring for Virus"""
     def __init__(self, pos, image,*groups):
         super(Virus, self).__init__(pos, "virus", *groups)
-        self.hp = 600
+        self.hp = 300
         self.is_explosive = None
         self.bullets = pg.sprite.Group()
         self.bullet_color = (51, 51, 255)

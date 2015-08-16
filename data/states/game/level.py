@@ -1,42 +1,51 @@
 import random
 import pygame as pg
 
+from pytmx.util_pygame import load_pygame
 from ... import util, actors, hud
 
 class Level(object):
     """docstring for Level"""
     def __init__(self, player):
-        w = len(util.WORLD[0])*util.WALL_SIZE
-        h = len(util.WORLD)*util.WALL_SIZE
-        self.image = pg.Surface((w,h))
-        self.rect = self.image.get_rect()
-        self.background = pg.Surface(self.image.get_size())
-        self.background = self.background.convert()
-        self.background.fill((0,0,0))
         self.max_enemies = 18
         self.all_sprites = pg.sprite.LayeredUpdates()
+        self.map_sprites = pg.sprite.Group()
         self.actions = pg.sprite.Group()
-        self.walls = self.make_walls()
-        self.enemies = self.make_enemies()
+        self.walls = pg.sprite.Group()
+        self.visible_sprites = pg.sprite.LayeredUpdates()
         self.player_singleton = pg.sprite.GroupSingle()
         player.add(self.player_singleton, self.all_sprites)
+
+        self.world_map = load_pygame(util.MAPS['1'])
+        w = self.world_map.width*util.WALL_SIZE
+        h = self.world_map.height*util.WALL_SIZE
+        self.image = pg.Surface((w,h))
+        self.rect = self.image.get_rect()
+        
+        self.enemies = self.make_enemies()
+        self.make_level()
         self.viewport = util.SCREEN_RECT.copy()        
 
-    def make_walls(self):
-        x = 0
-        y = 0
-        walls = pg.sprite.Group()
-        for row in util.WORLD:
-            for col in row:
-                if col == "#":
-                    Wall((x,y), walls, self.all_sprites)
-                if col == "=":
-                    InfectedWall((x,y), walls, self.actions, self.all_sprites)
-                x += util.WALL_SIZE
-            y += util.WALL_SIZE
-            x = 0
 
-        return walls
+    def make_level(self):
+        layer = self.world_map.layers[0]
+        collision = self.world_map.layers[1]
+        infecteds = self.world_map.layers[2]
+        for x, y, image in layer.tiles():
+            if collision.data[x][y]:
+                true_image = self.world_map.get_tile_image(y, x, 0)
+                Wall((y*64,x*64), true_image, self.walls, self.all_sprites)
+            if infecteds.data[x][y]:
+                true_image = self.world_map.get_tile_image(y, x, 0)
+                normal_image = self.world_map.get_tile_image(y, x, 2)
+                iwall = InfectedWall((y*64,x*64), normal_image, true_image)
+                iwall.add(self.all_sprites, self.actions, self.walls)
+            tile = pg.sprite.Sprite(self.map_sprites)
+            tile.image = image
+            tile.rect = pg.Rect(x*64, y*64, 64,64)
+        
+
+
 
     def make_enemies(self):
         enemies = pg.sprite.Group()
@@ -64,6 +73,10 @@ class Level(object):
             if layer != sprite.rect.bottom:
                 self.all_sprites.change_layer(sprite, sprite.rect.bottom)
 
+        for sprite in self.all_sprites:
+            if self.viewport.colliderect(sprite.rect):
+                self.visible_sprites.add(sprite)
+
         # Remove bullets when collides with walls
         pg.sprite.groupcollide(self.walls, util.bullets_group, False, True)
 
@@ -72,12 +85,13 @@ class Level(object):
         self.viewport.clamp_ip(self.rect)
 
     def is_clear(self):
-        if not self.actions:
-            return True
+        # if not self.actions:
+        #     return True
         return False
 
     def render(self, surface):
         self.image.fill((0,100,10))
+        self.map_sprites.draw(self.image)
         self.all_sprites.draw(self.image)
         util.gfx_group.draw(self.image)
         surface.blit(self.image, (0,0), self.viewport)       
@@ -86,20 +100,19 @@ class Level(object):
 
 class Wall(pg.sprite.Sprite):
     """docstring for Wall"""
-    def __init__(self, pos, *gorups):
+    def __init__(self, pos, image, *gorups):
         super(Wall, self).__init__(*gorups)
-        self.image = pg.Surface((util.WALL_SIZE, util.WALL_SIZE))
-        self.image.fill((155,255,155))
+        self.image = image
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
         self.dirty = 1
 
 class InfectedWall(pg.sprite.Sprite):
     """docstring for Wall"""
-    def __init__(self, pos, *gorups):
+    def __init__(self, pos, image, normal_image, *gorups):
         super(InfectedWall, self).__init__(*gorups)
-        self.image = pg.Surface((util.WALL_SIZE, util.WALL_SIZE))
-        self.image.fill((55,100,25))
+        self.image = image
+        self.normal_image = normal_image
         self.rect = self.image.get_rect(topleft=pos)
         self.big_rect = self.rect.copy()
         self.big_rect.inflate_ip(15,10)
@@ -115,7 +128,7 @@ class InfectedWall(pg.sprite.Sprite):
     def kill(self):
         super(InfectedWall, self).kill()
         self.tooltip.kill()
-        del self
+        self.image = self.normal_image
         return False
 
     def update(self, dt, now, player, keys):
@@ -124,18 +137,18 @@ class InfectedWall(pg.sprite.Sprite):
             player.score += random.randint(20,50)
             hud.SuccessLabel(self.big_rect.topleft, "Deleted")
             return self.kill()
-
-        if self.big_rect.colliderect(player.rect):
-            self.tooltip.add(util.gfx_group)
-            if keys[pg.K_e]:
-                self.deleting = True
         else:
-            self.tooltip.remove(util.gfx_group)
-            self.deleting = False
-            self.death = 0      
-            self.tooltip.change_text(self.help_text)
-        if now-self.time > self.delay:
-            if self.deleting:
-                self.tooltip.change_text("Deleting %d" % (self.death))
-                self.death += 1
-            self.time = now
+            if self.big_rect.colliderect(player.rect):
+                self.tooltip.add(util.gfx_group)
+                if keys[pg.K_e]:
+                    self.deleting = True
+            else:
+                self.tooltip.remove(util.gfx_group)
+                self.deleting = False
+                self.death = 0      
+                self.tooltip.change_text(self.help_text)
+            if now-self.time > self.delay:
+                if self.deleting:
+                    self.tooltip.change_text("Deleting %d" % (self.death))
+                    self.death += 1
+                self.time = now

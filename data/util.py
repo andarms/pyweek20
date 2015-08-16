@@ -24,31 +24,7 @@ ATTACK_KEYS = {
     pg.K_a:  "LEFT",
     pg.K_d: "RIGHT"
 }
-WORLD = [
-    "####################################################",
-    "#      #                                           #",
-    "#                                                  #",
-    "#                  ######=####    ###########      #",
-    "#      #                                           #",
-    "#      #                                           #",
-    "#      #                           #######         #",
-    "#      #                                           #",
-    "#      #                                           #",
-    "#      #                            #######        #",
-    "#      #                                           #",
-    "#      #                                   ###=### #",
-    "#                                                  #",
-    "#                                                  #",
-    "#            #########=#######                     #",
-    "#                                                  #",
-    "#                                                  #",
-    "#                                                  #",
-    "#    ###################      ######### ############",
-    "#                                                  #",
-    "#                                                  #",
-    "####################################################"
-]
-WALL_SIZE = 32
+WALL_SIZE = 64
 
 
 # Helper functions
@@ -93,6 +69,9 @@ def load_all_fonts(directory, accept=(".ttf",)):
     """
     return load_all_music(directory, accept)
 
+def load_all_maps(directory, accept=(".tmx",)):
+    return load_all_music(directory, accept)
+
 def split_sheet(sheet, size, columns, rows):
     """
     Divide a loaded sprite sheet into subsurfaces.
@@ -123,3 +102,4 @@ bullets_group = pg.sprite.Group()
 # load resources
 FONTS = load_all_fonts(os.path.join('resources', 'fonts'))
 GFX = load_all_gfx("resources")
+MAPS = load_all_maps(os.path.join('resources', 'levels'))
