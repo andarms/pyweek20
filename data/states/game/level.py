@@ -15,6 +15,7 @@ class Level(object):
         self.visible_sprites = pg.sprite.LayeredUpdates()
         self.player_singleton = pg.sprite.GroupSingle()
 
+        # self.world_map = load_pygame(util.MAPS[0])
         self.world_map = load_pygame(util.MAPS.pop())
         w = self.world_map.width*util.WALL_SIZE
         h = self.world_map.height*util.WALL_SIZE

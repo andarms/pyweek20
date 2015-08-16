@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="31" tilewidth="64" tileheight="64" nextobjectid="1">
+ <properties>
+  <property name="bugs" value="16"/>
+  <property name="chasing" value="6"/>
+  <property name="error" value="1"/>
+  <property name="trojan" value="1"/>
+  <property name="virus" value="0"/>
+ </properties>
+ <tileset firstgid="1" name="tile-green" tilewidth="64" tileheight="64">
+  <image source="../tile-green.png" width="256" height="448"/>
+  <tile id="2">
+   <properties>
+    <property name="bugs" value="16"/>
+    <property name="chasing" value="6"/>
+    <property name="error" value="0"/>
+    <property name="trojans" value="2"/>
+    <property name="virus" value="0"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="coli" width="24" height="31">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhagB0JD5T57FTCo+YPPfPxAVxqqeGmkWA+MfoGs/nUxqPmk5/WCAF8Zg1F84dz/FKaJgaL+eh6sJkxmM0f6uFPK/NpCQCS/wvD
+  </data>
+ </layer>
+ <layer name="asd" width="24" height="31">
+  <data encoding="base64" compression="zlib">
+   eJztleEKgkAQhFUyLNTKqMj3f1D3wAMZ5mr3VijQgflxevex7I1rUaynUlyJj7MPK7KDalg3ihosfin4WINHO//3fMwLZgB1Ew/E9wTfWu878XzcAJ/1Fvvq4T/ETzDed9jD5gLLRU5/LNr53/mduBefDWbfasze8h2bPxqxLMbsLXPE5k/OfyqlwD/Zy1frH/k4Q9hde/gtrD+dRz5mjGXOw8eMscx5+BptjW+ZPxfxFRip83HvBADACQM=
+  </data>
+ </layer>
+ <layer name="infec" width="24" height="31">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUMJOhh5vqrhgFMDAYwpacNDEKhi4YDGkOBkbT3iggB6Cnm9F0NLQAehkEACx7ADw=
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="19" tilewidth="64" tileheight="64" nextobjectid="1">
+ <tileset firstgid="1" name="tile-violet" tilewidth="64" tileheight="64">
+  <image source="../tile-violet.png" width="256" height="448"/>
+  <tile id="2">
+   <properties>
+    <property name="bugs" value="0"/>
+    <property name="chasing" value="0"/>
+    <property name="error" value="0"/>
+    <property name="trojan" value="3"/>
+    <property name="virus" value="6"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="14" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAfsJOIB4s+Qn6gtj5C5tBa32i4DO1wobY+cgAAAs4Eww==
+  </data>
+ </layer>
+ <layer name="Capa de patrones 2" width="14" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYCIRswAxJwPpgGOQ6BMEYiEgFiZRnygQiwGxOIn6CNlPrD50+0fDBbv9wy1cqKmPF4j5gJiLSMwPxAJADACTiQQ1
+  </data>
+ </layer>
+ <layer name="Capa de patrones 3" width="14" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFpADmEW4/LjDQ7hpo+3GBweouUgEAIJAAEA==
+  </data>
+ </layer>
+</map>

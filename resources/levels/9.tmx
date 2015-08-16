@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="21" tilewidth="64" tileheight="64" nextobjectid="1">
+ <properties>
+  <property name="bugs" value="0"/>
+  <property name="chasing" value="0"/>
+  <property name="error" value="1"/>
+  <property name="trojan" value="0"/>
+  <property name="virus" value="22"/>
+ </properties>
+ <tileset firstgid="1" name="tile-violet" tilewidth="64" tileheight="64">
+  <image source="../tile-violet.png" width="256" height="448"/>
+  <tile id="2">
+   <properties>
+    <property name="bugs" value="0"/>
+    <property name="chasing" value="0"/>
+    <property name="error" value="1"/>
+    <property name="trojan" value="0"/>
+    <property name="virus" value="22"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="32" height="21">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh4wD5AeDDajytcSBUnRe9gsp+W4TwU7CeklljxoWr/QIf/QNtPSC2x4kPV/oEO/5FuPyG1xIoPVfvpiQeL/QMJAAATDGQ=
+  </data>
+ </layer>
+ <layer name="Capa de patrones 3" width="32" height="21">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYBogzALErAwDB3gGof2CQCwExMIUihOjBpv9okAsBsTiFIojA0koLUWE/bQAQ8l+WsQ/KfaPxv/A2j8a/9QHo/YTb/9wTH+41AzG+p/e9vMCMR8Qc9EZ8wOxABADAHHlC4Y=
+  </data>
+ </layer>
+ <layer name="Capa de patrones 2" width="32" height="21">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowAVMFNJfBQMTTAa/yMbjMb/KBhIQIv0N5pGBycAAMqYACg=
+  </data>
+ </layer>
+</map>
