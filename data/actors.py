@@ -204,7 +204,7 @@ class Player(Actor):
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
-            damage = random.randint(20,70)
+            damage = random.randint(10,50)
             value = bug.take_damage(damage)
             if value:
                 self.score += value
@@ -549,7 +549,7 @@ class PickUp(pg.sprite.Sprite):
         self.image = pg.Surface((20,20))
         self.image.fill((255,50,50))
         self.rect = self.image.get_rect(center=pos)
-        self.value = random.randint(10,50)
+        self.value = random.randint(5,40)
 
     def update(self, player):
         if self.rect.colliderect(player.rect):
