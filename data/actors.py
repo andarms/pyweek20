@@ -20,6 +20,7 @@ class Actor(pg.sprite.Sprite):
         self.cooldowntime = 0.1 #seg
         self.cooldown = 0.5
         self.is_explosive = False
+        self.exploded = False
         self.hp = 100
         self.collide = False
         self.animate_timer  = 0.0
@@ -119,11 +120,11 @@ class Actor(pg.sprite.Sprite):
         if self.hp <= 0:
             return self.value
 
-    def kill(self, exploded=False):
+    def kill(self):
         super(Actor, self).kill()
         for _ in xrange(random.randint(25,50)):
             Fragment(self.rect.center)
-        if not exploded:
+        if not self.exploded:
             hud.KillLabel(self.rect.topleft, self.value)
             rand = random.random()
             if rand > .66 and rand < 0.77:
@@ -198,7 +199,8 @@ class Player(Actor):
                     damage = random.randint(5, e.max_damage)
                     self.take_damage(damage)
                     hud.DamageLabel(self.rect.topleft, damage)
-                    e.kill(True)        
+                    e.exploded = True
+                    e.kill()        
         # Bullests collisions with enemies
         hits = pg.sprite.groupcollide(enemies, self.bullets, False, True)
         for bug in hits:
@@ -276,6 +278,7 @@ class ChasingBug(Bug):
         super(ChasingBug, self).__init__(pos, "kamikaze", *groups)
         self.wait_delay = 500 #mseg
         self.value = 15
+        self.max_damage = 35
 
     def update(self, dt, now, walls, player):
         """
@@ -365,8 +368,8 @@ class Virus(Bug):
                 if x_diff < 0: direction = "LEFT"
                 else: direction = "RIGHT"
             else:
-                if y_diff < 0: direction = "UP"
-                else: direction = "DOWN"
+                if y_diff < 0: direction = "DOWN"
+                else: direction = "UP"
             self.change_direction(now, direction)
 
         x_sight = self.rect.x in xrange(player.rect.x-32, player.rect.x+32)
